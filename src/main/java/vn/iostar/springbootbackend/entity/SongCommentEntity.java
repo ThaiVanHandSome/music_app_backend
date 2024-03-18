@@ -35,4 +35,8 @@ public class SongCommentEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "id_song", referencedColumnName = "id_song")
+    private SongEntity song;
 }

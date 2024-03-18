@@ -46,4 +46,7 @@ public class SongEntity implements Serializable {
 
     @OneToMany(mappedBy = "song")
     private List<ArtistSongEntity> artistSongs;
+
+    @OneToMany(mappedBy = "song")
+    private List<SongCommentEntity> songComments;
 }
