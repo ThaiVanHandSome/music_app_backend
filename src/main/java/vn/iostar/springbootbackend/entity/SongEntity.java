@@ -23,8 +23,6 @@ public class SongEntity implements Serializable {
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
 
-    private Long id_artist;
-
     @Column(name = "views")
     private int views;
 
