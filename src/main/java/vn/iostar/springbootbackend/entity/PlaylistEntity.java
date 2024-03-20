@@ -19,13 +19,14 @@ public class PlaylistEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_playlist;
+    @Column(name = "id_playlist")
+    private Long idPlaylist;
 
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
 
     @Column(name = "day_created", nullable = false)
-    private LocalDateTime day_created;
+    private LocalDateTime dayCreated;
 
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;

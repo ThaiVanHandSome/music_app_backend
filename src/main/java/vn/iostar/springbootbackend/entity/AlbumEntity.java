@@ -20,13 +20,14 @@ public class AlbumEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_album;
+    @Column(name = "id_album")
+    private Long idAlbum;
 
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
 
     @Column(name = "day_created")
-    private LocalDateTime day_created;
+    private LocalDateTime dayCreated;
 
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;

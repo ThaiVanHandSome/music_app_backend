@@ -19,7 +19,8 @@ public class SongCommentEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_comment;
+    @Column(name = "id_comment")
+    private Long idComment;
 
     @Column(name = "content", nullable = false, columnDefinition = "nvarchar(1000)")
     private String content;
@@ -28,7 +29,7 @@ public class SongCommentEntity implements Serializable {
     private int likes;
 
     @Column(name = "day_commented")
-    private LocalDateTime day_commented;
+    private LocalDateTime dayCommented;
 
     @OneToMany(mappedBy = "songComment")
     private List<CommentLikedEntity> commentLikeds;

@@ -21,7 +21,8 @@ public class SongEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_song;
+    @Column(name = "id_song")
+    private Long idSong;
 
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;

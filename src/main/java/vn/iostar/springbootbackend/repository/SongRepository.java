@@ -20,6 +20,6 @@ public interface SongRepository extends JpaRepository<SongEntity, Long> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE SongEntity s SET s.views = s.views + 1 WHERE s.id_song = :songId")
+    @Query("UPDATE SongEntity s SET s.views = s.views + 1 WHERE s.idSong = :songId")
     void incrementViewCount(Long songId);
 }

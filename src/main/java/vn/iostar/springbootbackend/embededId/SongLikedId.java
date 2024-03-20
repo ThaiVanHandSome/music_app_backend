@@ -15,8 +15,8 @@ import java.io.Serializable;
 public class SongLikedId implements Serializable {
 
     @Column(name = "id_user")
-    private Long id_user;
+    private Long idUser;
 
     @Column(name = "id_song")
-    private Long id_song;
+    private Long idSong;
 }

@@ -21,7 +21,7 @@ public class PlaylistSongEntity implements Serializable {
     private PlaylistSongId playlistSongId;
 
     @Column(name = "day_added")
-    private LocalDateTime day_added;
+    private LocalDateTime dayAdded;
 
     @JsonBackReference
     @ManyToOne
