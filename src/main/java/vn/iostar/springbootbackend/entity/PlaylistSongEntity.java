@@ -1,5 +1,6 @@
 package vn.iostar.springbootbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,10 +23,12 @@ public class PlaylistSongEntity implements Serializable {
     @Column(name = "day_added")
     private LocalDateTime day_added;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "id_playlist", referencedColumnName = "id_playlist", insertable = false,  updatable = false)
     private PlaylistEntity playlist;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false,  updatable = false)
     private SongEntity song;
