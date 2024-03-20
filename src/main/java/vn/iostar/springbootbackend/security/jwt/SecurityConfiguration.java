@@ -17,6 +17,9 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JWTAuthenticationFilter jwtAuthFilter;
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**", "/swagger-ui.html", "/v2/api-docs", "/webjars/**" };
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,8 +31,8 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers("/**").permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
