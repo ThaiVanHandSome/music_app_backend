@@ -16,19 +16,19 @@ public class SongLikedController {
 
     @GetMapping("/likedCountById/{songId}")
     public ResponseEntity<?> LikeCountById(@PathVariable("songId") Long songId) {
-        return ResponseHandler.responseBuilder(songLikedService.countLikesBySongId(songId), HttpStatus.OK, "Liked count of song by id: " + songId + " successfully");
+        return ResponseEntity.ok(songLikedService.countLikesBySongId(songId));
     }
 
     @GetMapping("/isUserLikedSong/songId={songId}&userId={userId}")
     public ResponseEntity<?> isUserLikedSong(@PathVariable("songId") Long songId, @PathVariable("userId") Long userId) {
-        return ResponseHandler.responseBuilder(songLikedService.isUserLikedSong(songId, userId), HttpStatus.OK, "Check if user liked song successfully");
+        return ResponseEntity.ok(songLikedService.isUserLikedSong(songId, userId));
     }
 
     @PostMapping("/toggleLike/songId={songId}&userId={userId}")
     public ResponseEntity<?> toggleLike(@PathVariable("songId") Long songId, @PathVariable("userId") Long userId) {
         songLikedService.toggleLike(songId, userId);
         boolean isLiked = songLikedService.isUserLikedSong(songId, userId);
-        return ResponseHandler.responseBuilder(isLiked ? "Liked" : "Unliked", HttpStatus.OK, "Toggle like/unlike song successfully");
+        return ResponseEntity.ok(isLiked);
     }
 
 

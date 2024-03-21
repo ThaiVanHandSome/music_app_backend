@@ -1,5 +1,6 @@
 package vn.iostar.springbootbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class SongEntity implements Serializable {
     private String image;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_album", referencedColumnName = "id_album")
     private AlbumEntity album;
 

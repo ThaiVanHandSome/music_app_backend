@@ -1,5 +1,6 @@
 package vn.iostar.springbootbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,10 +34,12 @@ public class SongCommentEntity implements Serializable {
     private List<CommentLikedEntity> commentLikeds;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private UserEntity user;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song")
     private SongEntity song;
 }
