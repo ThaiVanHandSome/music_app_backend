@@ -18,13 +18,14 @@ public class ArtistEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_artist;
+    @Column(name = "id_artist")
+    private Long idArtist;
 
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
 
     @Column(name = "birth_day")
-    private LocalDateTime birth_day;
+    private LocalDateTime birthDay;
 
     @Column(name = "gender", nullable = false)
     private int gender;

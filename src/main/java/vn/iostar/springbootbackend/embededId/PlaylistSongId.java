@@ -16,8 +16,8 @@ import java.io.Serializable;
 @Embeddable
 public class PlaylistSongId implements Serializable {
     @Column(name = "id_playlist")
-    private Long id_playlist;
+    private Long idPlaylist;
 
     @Column(name = "id_song")
-    private Long id_song;
+    private Long idSong;
 }

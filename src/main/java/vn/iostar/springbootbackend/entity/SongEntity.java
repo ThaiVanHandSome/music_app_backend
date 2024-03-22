@@ -1,6 +1,8 @@
 package vn.iostar.springbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +21,11 @@ public class SongEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_song;
+    @Column(name = "id_song")
+    private Long idSong;
 
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
-
-    private Long id_artist;
 
     @Column(name = "views")
     private int views;
@@ -35,6 +36,7 @@ public class SongEntity implements Serializable {
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
 
+    @JsonIgnoreProperties("songs")
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_album", referencedColumnName = "id_album")

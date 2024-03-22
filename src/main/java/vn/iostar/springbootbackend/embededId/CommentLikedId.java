@@ -15,9 +15,9 @@ import java.io.Serializable;
 public class CommentLikedId implements Serializable {
 
     @Column(name = "id_comment")
-    private Long id_comment;
+    private Long idComment;
 
     @Column(name = "id_user")
-    private Long id_user;
+    private Long idUser;
 
 }
