@@ -12,12 +12,12 @@ import java.util.List;
 
 @Repository
 public interface PlaylistSongRepository extends JpaRepository<PlaylistSongEntity, Long> {
-    @Query("SELECT s.song FROM PlaylistSongEntity s WHERE s.playlistSongId.id_playlist = ?1")
+    @Query("SELECT s.song FROM PlaylistSongEntity s WHERE s.playlistSongId.idPlaylist = ?1")
     List<SongEntity> findAllByPlaylistSongId(Long id_playlist);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM PlaylistSongEntity s WHERE s.playlistSongId.id_playlist = ?1 AND s.playlistSongId.id_song = ?2")
+    @Query("DELETE FROM PlaylistSongEntity s WHERE s.playlistSongId.idPlaylist = ?1 AND s.playlistSongId.idSong = ?2")
     int deleteByPlaylistSongId(Long id_playlist, Long id_song);
 
 }

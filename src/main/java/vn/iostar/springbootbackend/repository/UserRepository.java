@@ -8,8 +8,7 @@ import vn.iostar.springbootbackend.entity.UserEntity;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long>{
-    UserEntity findByUuid(String uuid);
-    @Query("SELECT u FROM UserEntity u WHERE u.id_user = ?1")
+    @Query("SELECT u FROM UserEntity u WHERE u.idUser = ?1")
     Optional<UserEntity> findByIdUser(Long id_user);
     public Optional<UserEntity> findByEmail(String email);
 }

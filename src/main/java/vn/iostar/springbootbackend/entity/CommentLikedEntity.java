@@ -18,13 +18,11 @@ public class CommentLikedEntity implements Serializable {
     @EmbeddedId
     private CommentLikedId commentLikedId;
 
-    @JsonBackReference
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_comment", referencedColumnName = "id_comment", insertable = false,  updatable = false)
     private SongCommentEntity songComment;
 
-    @JsonBackReference
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false,  updatable = false)

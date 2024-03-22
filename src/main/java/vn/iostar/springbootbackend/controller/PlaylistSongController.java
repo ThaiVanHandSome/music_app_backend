@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.embededId.PlaylistSongId;
 import vn.iostar.springbootbackend.entity.PlaylistSongEntity;
-import vn.iostar.springbootbackend.service.IPlaylistSongService;
+import vn.iostar.springbootbackend.service.impl.PlaylistSongService;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/playlistSong")
 public class PlaylistSongController {
     @Autowired
-    private IPlaylistSongService playlistSongService;
+    private PlaylistSongService playlistSongService;
 
     @GetMapping("/findAllSongByPlaylistId/{id_playlist}")
     public ResponseEntity<?> findAllSongByPlaylistId(@PathVariable Long id_playlist) {
@@ -30,7 +30,7 @@ public class PlaylistSongController {
     public ResponseEntity<?> addSongToPlaylist(@PathVariable Long id_playlist, @PathVariable Long id_song) {
         PlaylistSongEntity entity = new PlaylistSongEntity();
         entity.setPlaylistSongId(new PlaylistSongId(id_playlist, id_song));
-        entity.setDay_added(LocalDateTime.now());
+        entity.setDayAdded(LocalDateTime.now());
         return ResponseEntity.ok(playlistSongService.save(entity));
     }
 }

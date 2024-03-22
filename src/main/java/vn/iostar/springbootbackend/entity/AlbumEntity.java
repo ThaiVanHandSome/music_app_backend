@@ -35,7 +35,6 @@ public class AlbumEntity implements Serializable {
     @OneToMany(mappedBy = "album")
     private List<SongEntity> songs;
 
-    @JsonBackReference
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist")

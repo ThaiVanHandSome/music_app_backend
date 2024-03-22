@@ -19,13 +19,11 @@ public class SongLikedEntity implements Serializable {
     @EmbeddedId
     private SongLikedId songLikedId;
 
-    @JsonBackReference
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false,  updatable = false)
     private UserEntity user;
 
-    @JsonBackReference
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false,  updatable = false)

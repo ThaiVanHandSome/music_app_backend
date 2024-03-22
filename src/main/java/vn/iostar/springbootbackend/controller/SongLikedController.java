@@ -1,18 +1,16 @@
 package vn.iostar.springbootbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.iostar.springbootbackend.response.ResponseHandler;
-import vn.iostar.springbootbackend.service.ISongLikedService;
+import vn.iostar.springbootbackend.service.impl.SongLikedService;
 
 @RestController
 @RequestMapping("/api/v1/songLiked")
 public class SongLikedController {
 
     @Autowired
-    private ISongLikedService songLikedService;
+    private SongLikedService songLikedService;
 
     @GetMapping("/likedCountById/{songId}")
     public ResponseEntity<?> LikeCountById(@PathVariable("songId") Long songId) {

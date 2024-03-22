@@ -8,10 +8,10 @@ import vn.iostar.springbootbackend.entity.SongLikedEntity;
 
 @Repository
 public interface SongLikedRepository extends JpaRepository<SongLikedEntity, Long> {
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.id_song = ?1")
+    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1")
     Long countLikesBySongId(Long songId);
 
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.id_song = ?1 AND s.songLikedId.id_user = ?2")
+    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
     Long countLikesBySongIdAndUserId(Long songId, Long userId);
 
     default boolean isUserLikedSong(Long songId, Long userId) {

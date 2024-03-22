@@ -31,7 +31,6 @@ public class PlaylistEntity implements Serializable {
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
 
-    @JsonBackReference
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
