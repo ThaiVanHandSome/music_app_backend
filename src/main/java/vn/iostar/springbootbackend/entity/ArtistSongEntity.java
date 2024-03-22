@@ -21,11 +21,13 @@ public class ArtistSongEntity implements Serializable {
 
     @JsonBackReference
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist", insertable = false, updatable = false)
     private ArtistEntity artist;
 
     @JsonBackReference
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false, updatable = false)
     private SongEntity song;
 }

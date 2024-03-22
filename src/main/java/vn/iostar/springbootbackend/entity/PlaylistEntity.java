@@ -33,6 +33,7 @@ public class PlaylistEntity implements Serializable {
 
     @JsonBackReference
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private UserEntity user;
 
