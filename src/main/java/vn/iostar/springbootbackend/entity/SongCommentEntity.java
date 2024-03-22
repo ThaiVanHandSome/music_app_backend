@@ -36,11 +36,13 @@ public class SongCommentEntity implements Serializable {
 
     @JsonBackReference
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private UserEntity user;
 
     @JsonBackReference
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song")
     private SongEntity song;
 }

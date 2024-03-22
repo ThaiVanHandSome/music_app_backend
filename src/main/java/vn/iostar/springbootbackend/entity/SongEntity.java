@@ -38,6 +38,7 @@ public class SongEntity implements Serializable {
 
     @JsonIgnoreProperties("songs")
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_album", referencedColumnName = "id_album")
     private AlbumEntity album;
 
