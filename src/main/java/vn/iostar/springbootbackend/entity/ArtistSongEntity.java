@@ -3,6 +3,7 @@ package vn.iostar.springbootbackend.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import vn.iostar.springbootbackend.embededId.ArtistSongId;
 
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @Table(name = "artist_songs")
 public class ArtistSongEntity implements Serializable {
 
+    @Getter
     @EmbeddedId
     private ArtistSongId artistSongId;
 
@@ -29,4 +31,8 @@ public class ArtistSongEntity implements Serializable {
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false, updatable = false)
     private SongEntity song;
+
+    public void setArtistSongId(ArtistSongId artistSongId) {
+        this.artistSongId = artistSongId;
+    }
 }

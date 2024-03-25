@@ -53,4 +53,8 @@ public class SongEntity implements Serializable {
 
     @OneToMany(mappedBy = "song")
     private List<SongCommentEntity> songComments;
+
+    public SongEntity(Long idSong) {
+        this.idSong = idSong;
+    }
 }

@@ -38,4 +38,8 @@ public class SongService {
     public void increaseViewOfSong(Long id) {
         songRepository.incrementViewCount(id);
     }
+
+    public Optional<SongEntity> getSongbyId(Long id){
+        return  songRepository.findById(id);
+    }
 }
