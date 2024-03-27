@@ -9,6 +9,7 @@ import vn.iostar.springbootbackend.entity.AlbumEntity;
 import vn.iostar.springbootbackend.entity.SongEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SongRepository extends JpaRepository<SongEntity, Long> {
@@ -17,6 +18,8 @@ public interface SongRepository extends JpaRepository<SongEntity, Long> {
     List<SongEntity> findByAlbum(AlbumEntity album);
 
     List<SongEntity> findByNameContaining(String keyword);
+
+    Optional<SongEntity> findById(Long id);
 
     @Transactional
     @Modifying

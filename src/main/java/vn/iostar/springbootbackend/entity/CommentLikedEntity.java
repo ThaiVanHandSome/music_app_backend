@@ -27,5 +27,4 @@ public class CommentLikedEntity implements Serializable {
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false,  updatable = false)
     private UserEntity user;
-
 }

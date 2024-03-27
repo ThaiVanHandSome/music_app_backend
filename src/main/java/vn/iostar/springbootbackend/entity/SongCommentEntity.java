@@ -43,4 +43,60 @@ public class SongCommentEntity implements Serializable {
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song")
     private SongEntity song;
+
+    public Long getIdComment() {
+        return idComment;
+    }
+
+    public void setIdComment(Long idComment) {
+        this.idComment = idComment;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public LocalDateTime getDayCommented() {
+        return dayCommented;
+    }
+
+    public void setDayCommented(LocalDateTime dayCommented) {
+        this.dayCommented = dayCommented;
+    }
+
+    public List<CommentLikedEntity> getCommentLikeds() {
+        return commentLikeds;
+    }
+
+    public void setCommentLikeds(List<CommentLikedEntity> commentLikeds) {
+        this.commentLikeds = commentLikeds;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public SongEntity getSong() {
+        return song;
+    }
+
+    public void setSong(SongEntity song) {
+        this.song = song;
+    }
 }
