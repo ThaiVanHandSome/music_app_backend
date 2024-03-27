@@ -28,7 +28,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     private ApiInfo apiInfoMetaData() {
 
-        return new ApiInfoBuilder().title("NAME OF SERVICE")
+        return new ApiInfoBuilder().title("MUSIC BACKEND")
                 .description("API Endpoint Decoration")
                 .contact(new Contact("Dev-Team", "https://www.dev-team.com/", "dev-team@gmail.com"))
                 .license("Apache 2.0")

@@ -17,13 +17,13 @@ public class SongLikedController {
         return ResponseEntity.ok(songLikedService.countLikesBySongId(songId));
     }
 
-    @GetMapping("/isUserLikedSong/songId={songId}&userId={userId}")
-    public ResponseEntity<?> isUserLikedSong(@PathVariable("songId") Long songId, @PathVariable("userId") Long userId) {
+    @GetMapping("/isUserLikedSong")
+    public ResponseEntity<?> isUserLikedSong(@RequestParam("songId") Long songId, @RequestParam("userId") Long userId) {
         return ResponseEntity.ok(songLikedService.isUserLikedSong(songId, userId));
     }
 
-    @PostMapping("/toggleLike/songId={songId}&userId={userId}")
-    public ResponseEntity<?> toggleLike(@PathVariable("songId") Long songId, @PathVariable("userId") Long userId) {
+    @PostMapping("/toggleLike")
+    public ResponseEntity<?> toggleLike(@RequestParam("songId") Long songId, @RequestParam("userId") Long userId) {
         songLikedService.toggleLike(songId, userId);
         boolean isLiked = songLikedService.isUserLikedSong(songId, userId);
         return ResponseEntity.ok(isLiked);

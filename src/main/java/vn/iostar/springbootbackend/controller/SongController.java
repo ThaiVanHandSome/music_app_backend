@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.AlbumEntity;
 import vn.iostar.springbootbackend.entity.SongEntity;
 import vn.iostar.springbootbackend.service.impl.AlbumService;
+import vn.iostar.springbootbackend.service.impl.ArtistSongService;
 import vn.iostar.springbootbackend.service.impl.SongService;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class SongController {
 
     @Autowired
     private AlbumService albumService;
+
+    @Autowired
+    private ArtistSongService artistSongService;
 
     @GetMapping("/songs")
     public ResponseEntity<List<SongEntity>> getAllSongs() {
@@ -58,5 +62,10 @@ public class SongController {
             return ResponseEntity.ok(songService.getSongById(id).get());
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find song");
+    }
+
+    @GetMapping("/song/{songId}/artists")
+    public ResponseEntity<?> getArtistBySongId(@PathVariable Long songId) {
+        return ResponseEntity.ok(artistSongService.findArtistBySongId(songId));
     }
 }

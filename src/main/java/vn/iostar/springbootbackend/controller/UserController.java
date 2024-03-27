@@ -13,7 +13,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PatchMapping("/updateUserByFields/{id_user}")
+    @PatchMapping("/{id_user}")
     public ResponseEntity<?> updateUserByFields(@PathVariable Long id_user, @RequestBody Map<String, Object> fields) {
         return ResponseEntity.ok(userService.updateUserByFields(id_user, fields));
     }

@@ -15,18 +15,18 @@ public class PlaylistSongController {
     @Autowired
     private PlaylistSongService playlistSongService;
 
-    @GetMapping("/findAllSongByPlaylistId/{id_playlist}")
+    @GetMapping("/{id_playlist}/songs")
     public ResponseEntity<?> findAllSongByPlaylistId(@PathVariable Long id_playlist) {
         return ResponseEntity.ok(playlistSongService.findAllByPlaylistSongId(id_playlist));
     }
 
-    @DeleteMapping("/deleteSongFromPlaylist/{id_playlist}/{id_song}")
+    @DeleteMapping("/{id_playlist}/{id_song}")
     public ResponseEntity<?> deleteSongFromPlaylist(@PathVariable Long id_playlist, @PathVariable Long id_song) {
         int isSuccess = playlistSongService.deleteByPlaylistSongId(id_playlist, id_song);
         return ResponseEntity.ok(isSuccess);
     }
 
-    @PostMapping("/addSongToPlaylist/{id_playlist}/{id_song}")
+    @PostMapping("/{id_playlist}/{id_song}")
     public ResponseEntity<?> addSongToPlaylist(@PathVariable Long id_playlist, @PathVariable Long id_song) {
         PlaylistSongEntity entity = new PlaylistSongEntity();
         entity.setPlaylistSongId(new PlaylistSongId(id_playlist, id_song));

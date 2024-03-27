@@ -21,10 +21,4 @@ public class ArtistSongController {
     public ResponseEntity<?> getAllSongsByArtistId(@PathVariable Long artistId) {
         return ResponseEntity.ok(artistSongService.findAllSongsByArtistId(artistId));
     }
-
-    // Get Artist by SongId
-    @GetMapping("/artistIdBySongId/{songId}")
-    public ResponseEntity<?> getArtistBySongId(@PathVariable Long songId) {
-        return ResponseEntity.ok(artistSongService.findArtistBySongId(songId));
-    }
 }

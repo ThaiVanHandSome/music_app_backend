@@ -23,7 +23,6 @@ public class AlbumController {
     @Autowired
     private SongService songService;
 
-
     @GetMapping("/albums")
     public ResponseEntity<List<AlbumEntity>> getAllAlbums() {
         List<AlbumEntity> albums = albumService.getAllAlbums();
