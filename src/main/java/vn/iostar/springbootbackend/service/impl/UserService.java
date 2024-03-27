@@ -1,5 +1,8 @@
 package vn.iostar.springbootbackend.service.impl;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import vn.iostar.springbootbackend.entity.UserEntity;
@@ -11,11 +14,18 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private UserRepository userRepository;
+
+    private final static String EMAIL_NOT_FOUND_MSG = "Email %s not found!";
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(String.format(EMAIL_NOT_FOUND_MSG)));
     }
 
     public Optional<UserEntity> getUserById(Long id) {
@@ -49,5 +59,9 @@ public class UserService {
 
     public void deleteById(Long aLong) {
         userRepository.deleteById(aLong);
+    }
+
+    public int enableUser(String email) {
+        return userRepository.enableUser(email);
     }
 }

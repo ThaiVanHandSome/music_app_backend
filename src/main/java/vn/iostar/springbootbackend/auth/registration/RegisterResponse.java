@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.auth;
+package vn.iostar.springbootbackend.auth.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

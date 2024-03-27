@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import vn.iostar.springbootbackend.auth.registration.token.ConfirmationToken;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -59,12 +61,16 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "song")
     private List<SongLikedEntity> songLikeds;
 
+    @OneToMany(mappedBy = "user")
+    private List<ConfirmationToken> confirmationTokens;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+        return Collections.singleton(authority);
     }
     @Override
     public String getPassword() {
