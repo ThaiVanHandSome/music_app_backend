@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -91,9 +91,14 @@ public class AuthenticationService {
         );
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        if(!user.isActive()) {
+            throw new IllegalStateException("Account Not Confirm!");
+        }
+        var jwtToken = jwtService.generateAccessToken(user);
+        var jwtRefreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .access_token(jwtToken)
+                .refresh_token(jwtRefreshToken)
                 .build();
     }
 
