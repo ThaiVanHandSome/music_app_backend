@@ -53,6 +53,12 @@ public class AuthenticationService {
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
+                .id(user.getIdUser())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .avatar(user.getAvatar())
+                .gender(user.getGender())
                 .token(jwtToken)
                 .build();
     }
