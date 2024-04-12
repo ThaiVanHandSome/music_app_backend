@@ -17,6 +17,6 @@ public interface ArtistSongRepository extends JpaRepository<ArtistSongEntity, Ar
     List<SongEntity> findAllSongsByArtistId(Long id_artist);
 
     @Query("SELECT a.artist FROM ArtistSongEntity a WHERE a.artistSongId.idSong = ?1")
-    Optional<ArtistEntity> findArtistBySongId(Long id_song);
+    List<ArtistEntity> findArtistBySongId(Long id_song);
 
 }

@@ -40,7 +40,8 @@ public class UserService implements UserDetailsService {
                 field.setAccessible(true);
                 ReflectionUtils.setField(field, userEntity.get(), value);
             });
-            return userRepository.save(userEntity.get());
+            userRepository.save(userEntity.get());
+            return userEntity.get();
         }
         return null;
     }

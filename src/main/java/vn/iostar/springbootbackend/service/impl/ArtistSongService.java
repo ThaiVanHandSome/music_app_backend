@@ -23,7 +23,7 @@ public class ArtistSongService {
         return artistSongRepository.findAllSongsByArtistId(id_artist);
     }
 
-    public Optional<ArtistEntity> findArtistBySongId(Long id_song){
+    public List<ArtistEntity> findArtistBySongId(Long id_song){
         return artistSongRepository.findArtistBySongId(id_song);
     }
 }

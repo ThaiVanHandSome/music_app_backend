@@ -1,6 +1,7 @@
 package vn.iostar.springbootbackend.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -89,8 +90,11 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+        Optional<UserEntity> opt = repository.findByEmail(request.getEmail());
+        if(opt.isEmpty()) {
+            return AuthenticationResponse.builder().error(true).message("Email or Password wrong!").build();
+        }
+        UserEntity user = opt.get();
         if(!user.isActive()) {
             throw new IllegalStateException("Account Not Confirm!");
         }
@@ -99,6 +103,15 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .access_token(jwtToken)
                 .refresh_token(jwtRefreshToken)
+                .id(user.getIdUser())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .avatar(user.getAvatar())
+                .gender(user.getGender())
+                .error(false)
+                .success(true)
+                .message("Successfully!")
                 .build();
     }
 

@@ -1,10 +1,13 @@
 package vn.iostar.springbootbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.SongCommentEntity;
 import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.impl.SongCommentService;
 import vn.iostar.springbootbackend.service.impl.SongService;
 
@@ -23,25 +26,31 @@ public class SongCommentController {
 
     // Get Comments by Song
     @GetMapping("/song/{id_song}/comments")
-    public ResponseEntity<List<SongCommentEntity>> getCommentsBySongId(@PathVariable Long id_song) {
+    public ResponseEntity<?> getCommentsBySongId(@PathVariable Long id_song) {
         Optional<SongEntity> song = songService.getSongbyId(id_song);
         List<SongCommentEntity> comments = songCommentService.findAllComentsBySong(song);
-        return ResponseEntity.ok(comments);
+        Response res = new Response(true, false, "Get Comments Of Song Successfully!", comments);
+        return ResponseEntity.ok(res);
     }
 
     // Save Comment
     @PostMapping("/song/{id_song}/comments")
-    public ResponseEntity<SongCommentEntity> createComment(@RequestBody SongCommentEntity newComment) {
+    public ResponseEntity<?> createComment(@RequestBody SongCommentEntity newComment) {
         LocalDateTime commentDay = LocalDateTime.now();
         newComment.setDayCommented(commentDay);
         SongCommentEntity savedComment = songCommentService.saveComment(newComment);
-        return ResponseEntity.ok(savedComment);
+        Response res = new Response(true, false, "Add Comment Successfully!", newComment);
+        return ResponseEntity.ok(res);
     }
 
     // Get likes
     @GetMapping("/song/comment/{id_comment}/likes")
-    public int getLikesOfComment(@PathVariable Long id_comment){
+    public ResponseEntity<?> getLikesOfComment(@PathVariable Long id_comment){
         Optional<SongCommentEntity> comment = songCommentService.findCommentByIdComment(id_comment);
-        return comment.isPresent() ? comment.get().getLikes() : -1;
+        if(comment.isPresent()) {
+            Response res = new Response(true, false, "Get Likes Of Comment Successfully!",  comment.get().getLikes());
+            return ResponseEntity.ok(res);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can not find comment with id: " + id_comment);
     }
 }
