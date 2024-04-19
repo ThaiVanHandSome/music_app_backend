@@ -4,19 +4,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import vn.iostar.springbootbackend.embededId.ArtistSongId;
-import vn.iostar.springbootbackend.entity.ArtistEntity;
-import vn.iostar.springbootbackend.entity.ArtistSongEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.entity.Artist;
+import vn.iostar.springbootbackend.entity.ArtistSong;
+import vn.iostar.springbootbackend.entity.Song;
 
 import java.util.List;
-import java.util.Optional;
+
 @Repository
-public interface ArtistSongRepository extends JpaRepository<ArtistSongEntity, ArtistSongId> {
+public interface ArtistSongRepository extends JpaRepository<ArtistSong, ArtistSongId> {
 
-    @Query("SELECT s.song FROM ArtistSongEntity s WHERE s.artistSongId.idArtist = ?1")
-    List<SongEntity> findAllSongsByArtistId(Long id_artist);
+    @Query("SELECT s.song FROM ArtistSong s WHERE s.artistSongId.idArtist = ?1")
+    List<Song> findAllSongsByArtistId(Long id_artist);
 
-    @Query("SELECT a.artist FROM ArtistSongEntity a WHERE a.artistSongId.idSong = ?1")
-    List<ArtistEntity> findArtistBySongId(Long id_song);
+    @Query("SELECT a.artist FROM ArtistSong a WHERE a.artistSongId.idSong = ?1")
+    List<Artist> findArtistBySongId(Long id_song);
 
 }

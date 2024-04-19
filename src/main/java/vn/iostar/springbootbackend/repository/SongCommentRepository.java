@@ -1,29 +1,27 @@
 package vn.iostar.springbootbackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import vn.iostar.springbootbackend.embededId.SongLikedId;
-import vn.iostar.springbootbackend.entity.SongCommentEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
-import vn.iostar.springbootbackend.entity.UserEntity;
+import vn.iostar.springbootbackend.entity.SongComment;
+import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
 
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SongCommentRepository extends JpaRepository<SongCommentEntity, Long> {
+public interface SongCommentRepository extends JpaRepository<SongComment, Long> {
 
-    List<SongCommentEntity> findAllCommentsBySong(Optional<SongEntity> song);
+    List<SongComment> findAllCommentsBySong(Optional<Song> song);
 
-    List<SongCommentEntity> findAllComentsByUser(Optional<UserEntity> user);
+    List<SongComment> findAllComentsByUser(Optional<User> user);
 
 
     @Override
-    <S extends SongCommentEntity> S save(S entity);
+    <S extends SongComment> S save(S entity);
 
-    Optional<SongCommentEntity> findCommentByIdComment(Long id_comment);
+    Optional<SongComment> findCommentByIdComment(Long id_comment);
 
 
 

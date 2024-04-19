@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "artist_songs")
-public class ArtistSongEntity implements Serializable {
+public class ArtistSong implements Serializable {
 
     @Getter
     @EmbeddedId
@@ -25,12 +25,12 @@ public class ArtistSongEntity implements Serializable {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist", insertable = false, updatable = false)
-    private ArtistEntity artist;
+    private Artist artist;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false, updatable = false)
-    private SongEntity song;
+    private Song song;
 
     public void setArtistSongId(ArtistSongId artistSongId) {
         this.artistSongId = artistSongId;

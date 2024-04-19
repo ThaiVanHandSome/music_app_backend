@@ -5,24 +5,24 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import vn.iostar.springbootbackend.entity.AlbumEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.entity.Album;
+import vn.iostar.springbootbackend.entity.Song;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SongRepository extends JpaRepository<SongEntity, Long> {
-    List<SongEntity> findByViewsGreaterThan(int views);
+public interface SongRepository extends JpaRepository<Song, Long> {
+    List<Song> findByViewsGreaterThan(int views);
 
-    List<SongEntity> findByAlbum(AlbumEntity album);
+    List<Song> findByAlbum(Album album);
 
-    List<SongEntity> findByNameContaining(String keyword);
+    List<Song> findByNameContaining(String keyword);
 
-    Optional<SongEntity> findById(Long id);
+    Optional<Song> findById(Long id);
 
     @Transactional
     @Modifying
-    @Query("UPDATE SongEntity s SET s.views = s.views + 1 WHERE s.idSong = :songId")
+    @Query("UPDATE Song s SET s.views = s.views + 1 WHERE s.idSong = :songId")
     void incrementViewCount(Long songId);
 }

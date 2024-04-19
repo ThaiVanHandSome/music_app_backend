@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.embededId.PlaylistSongId;
-import vn.iostar.springbootbackend.entity.PlaylistSongEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.entity.PlaylistSong;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.impl.PlaylistSongService;
 
@@ -20,7 +20,7 @@ public class PlaylistSongController {
 
     @GetMapping("/{id_playlist}/songs")
     public ResponseEntity<?> findAllSongByPlaylistId(@PathVariable Long id_playlist) {
-        List<SongEntity> songs = playlistSongService.findAllByPlaylistSongId(id_playlist);
+        List<Song> songs = playlistSongService.findAllByPlaylistSongId(id_playlist);
         Response res = new Response(true, false, "Get Songs Of Playlist Successfully!", songs);
         return ResponseEntity.ok(res);
     }
@@ -34,7 +34,7 @@ public class PlaylistSongController {
 
     @PostMapping("/{id_playlist}/{id_song}")
     public ResponseEntity<?> addSongToPlaylist(@PathVariable Long id_playlist, @PathVariable Long id_song) {
-        PlaylistSongEntity entity = new PlaylistSongEntity();
+        PlaylistSong entity = new PlaylistSong();
         entity.setPlaylistSongId(new PlaylistSongId(id_playlist, id_song));
         entity.setDayAdded(LocalDateTime.now());
         playlistSongService.save(entity);

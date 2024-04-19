@@ -1,7 +1,6 @@
 package vn.iostar.springbootbackend.auth;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,7 @@ import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
 import vn.iostar.springbootbackend.auth.registration.token.ConfirmationToken;
 import vn.iostar.springbootbackend.auth.registration.token.ConfirmationTokenService;
 import vn.iostar.springbootbackend.entity.Role;
-import vn.iostar.springbootbackend.entity.UserEntity;
+import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.UserRepository;
 import vn.iostar.springbootbackend.security.jwt.JWTService;
 import vn.iostar.springbootbackend.service.impl.UserService;
@@ -50,9 +49,9 @@ public class AuthService {
         if(!isValidEmail) {
             throw new IllegalStateException("Email Not Valid!");
         }
-        Optional<UserEntity> optUser = repository.findByEmail(request.getEmail());
+        Optional<User> optUser = repository.findByEmail(request.getEmail());
         if(optUser.isEmpty()) {
-            var user = UserEntity.builder()
+            var user = User.builder()
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
                     .email(request.getEmail())
@@ -90,11 +89,11 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        Optional<UserEntity> opt = repository.findByEmail(request.getEmail());
+        Optional<User> opt = repository.findByEmail(request.getEmail());
         if(opt.isEmpty()) {
             return AuthenticationResponse.builder().error(true).message("Email or Password wrong!").build();
         }
-        UserEntity user = opt.get();
+        User user = opt.get();
         if(!user.isActive()) {
             throw new IllegalStateException("Account Not Confirm!");
         }

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Table(name = "song_liked")
-public class SongLikedEntity implements Serializable {
+public class SongLiked implements Serializable {
 
     @EmbeddedId
     private SongLikedId songLikedId;
@@ -22,10 +22,10 @@ public class SongLikedEntity implements Serializable {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false,  updatable = false)
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false,  updatable = false)
-    private SongEntity song;
+    private Song song;
 }

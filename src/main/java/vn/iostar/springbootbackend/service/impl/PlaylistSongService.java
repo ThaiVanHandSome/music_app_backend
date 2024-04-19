@@ -2,8 +2,8 @@ package vn.iostar.springbootbackend.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.iostar.springbootbackend.entity.PlaylistSongEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.entity.PlaylistSong;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.repository.PlaylistSongRepository;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class PlaylistSongService {
         this.playlistSongRepository = playlistSongRepository;
     }
 
-    public List<SongEntity> findAllByPlaylistSongId(Long id_playlist) {
+    public List<Song> findAllByPlaylistSongId(Long id_playlist) {
         return playlistSongRepository.findAllByPlaylistSongId(id_playlist);
     }
 
@@ -26,19 +26,19 @@ public class PlaylistSongService {
         return playlistSongRepository.deleteByPlaylistSongId(id_playlist, id_song);
     }
 
-    public List<PlaylistSongEntity> findAll() {
+    public List<PlaylistSong> findAll() {
         return playlistSongRepository.findAll();
     }
 
-    public List<PlaylistSongEntity> findAllById(Iterable<Long> longs) {
+    public List<PlaylistSong> findAllById(Iterable<Long> longs) {
         return playlistSongRepository.findAllById(longs);
     }
 
-    public <S extends PlaylistSongEntity> S save(S entity) {
+    public <S extends PlaylistSong> S save(S entity) {
         return playlistSongRepository.save(entity);
     }
 
-    public void delete(PlaylistSongEntity entity) {
+    public void delete(PlaylistSong entity) {
         playlistSongRepository.delete(entity);
     }
 

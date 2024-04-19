@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vn.iostar.springbootbackend.entity.UserEntity;
+import vn.iostar.springbootbackend.entity.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ public class ConfirmationToken {
     @Column(name = "confirmed_at")
     private LocalDateTime confirmedAt;
 
-    public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiredAt, UserEntity user) {
+    public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiredAt, User user) {
         this.token = token;
         this.createdAt = createdAt;
         this.expiredAt = expiredAt;
@@ -42,5 +42,5 @@ public class ConfirmationToken {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    private UserEntity user;
+    private User user;
 }

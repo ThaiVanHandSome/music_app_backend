@@ -1,7 +1,7 @@
 package vn.iostar.springbootbackend.service.impl;
 
 import org.springframework.stereotype.Service;
-import vn.iostar.springbootbackend.entity.AlbumEntity;
+import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.repository.AlbumRepository;
 
 import java.util.List;
@@ -15,18 +15,18 @@ public class AlbumService {
         this.albumRepository = albumRepository;
     }
 
-    public List<AlbumEntity> getAllAlbums() {
+    public List<Album> getAllAlbums() {
         return albumRepository.findAll();
     }
-    public Optional<AlbumEntity> getAlbumById(Long id) {
+    public Optional<Album> getAlbumById(Long id) {
         return albumRepository.findById(id);
     }
 
-    public List<AlbumEntity> getAlbumByIdArtist(Long idArtist) {
+    public List<Album> getAlbumByIdArtist(Long idArtist) {
         return albumRepository.getAlbumByIdArtist(idArtist);
     }
 
-    public List<AlbumEntity> getAlbumByKeyword(String keyword) {
+    public List<Album> getAlbumByKeyword(String keyword) {
         return albumRepository.findByNameContaining(keyword);
     }
 }

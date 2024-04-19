@@ -5,9 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import vn.iostar.springbootbackend.entity.AlbumEntity;
-import vn.iostar.springbootbackend.entity.ArtistEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.entity.Artist;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.impl.AlbumService;
 import vn.iostar.springbootbackend.service.impl.ArtistSongService;
@@ -30,14 +29,14 @@ public class SongController {
 
     @GetMapping("/songs")
     public ResponseEntity<?> getAllSongs() {
-        List<SongEntity> songs = songService.getAllSongs();
+        List<Song> songs = songService.getAllSongs();
         Response res = new Response(true, false, "Get Songs Successfully!", songs);
         return ResponseEntity.ok(res);
     }
 
     @GetMapping("/song/{id}")
     public ResponseEntity<?> getSongById(@PathVariable("id") Long id) {
-        Optional<SongEntity> optSong = songService.getSongById(id);
+        Optional<Song> optSong = songService.getSongById(id);
         if(optSong.isPresent()) {
             Response res = new Response(true, false, "Get Song Successfully!", optSong.get());
             return ResponseEntity.ok(res);
@@ -47,14 +46,14 @@ public class SongController {
 
     @GetMapping("/songs/query")
     public ResponseEntity<?> getSongsByKeyword(@RequestParam("p") String query) {
-        List<SongEntity> songs = songService.getSongsByKeyWord(query);
+        List<Song> songs = songService.getSongsByKeyWord(query);
         Response res = new Response(true, false, "Find Songs Successfully!", songs);
         return ResponseEntity.ok(res);
     }
 
     @PatchMapping("/song/{id}/view")
     public ResponseEntity<?> increaseViewOfSong(@PathVariable("id") Long id) {
-        Optional<SongEntity> optSong = songService.getSongById(id);
+        Optional<Song> optSong = songService.getSongById(id);
         if(optSong.isPresent()) {
             songService.increaseViewOfSong(id);
             Response res = new Response(true, false, "Successfully!", songService.getSongById(id).get());
@@ -65,7 +64,7 @@ public class SongController {
 
     @GetMapping("/song/{songId}/artists")
     public ResponseEntity<?> getArtistBySongId(@PathVariable Long songId) {
-        List<ArtistEntity> artists = artistSongService.findArtistBySongId(songId);
+        List<Artist> artists = artistSongService.findArtistBySongId(songId);
         Response res = new Response(true, false, "Get Artists Successfully!", artists);
         return ResponseEntity.ok(res);
     }

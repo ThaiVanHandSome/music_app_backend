@@ -4,14 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import vn.iostar.springbootbackend.embededId.SongLikedId;
-import vn.iostar.springbootbackend.entity.SongLikedEntity;
+import vn.iostar.springbootbackend.entity.SongLiked;
 
 @Repository
-public interface SongLikedRepository extends JpaRepository<SongLikedEntity, Long> {
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1")
+public interface SongLikedRepository extends JpaRepository<SongLiked, Long> {
+    @Query("SELECT COUNT(s) FROM SongLiked s WHERE s.songLikedId.idSong = ?1")
     Long countLikesBySongId(Long songId);
 
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
+    @Query("SELECT COUNT(s) FROM SongLiked s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
     Long countLikesBySongIdAndUserId(Long songId, Long userId);
 
     default boolean isUserLikedSong(Long songId, Long userId) {

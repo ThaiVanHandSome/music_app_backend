@@ -1,8 +1,8 @@
 package vn.iostar.springbootbackend.service.impl;
 
 import org.springframework.stereotype.Service;
-import vn.iostar.springbootbackend.entity.PlaylistEntity;
-import vn.iostar.springbootbackend.entity.UserEntity;
+import vn.iostar.springbootbackend.entity.Playlist;
+import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.PlaylistRepository;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class PlaylistService {
         this.playlistRepository = playlistRepository;
     }
 
-    public List<PlaylistEntity> getPlaylistByUser(UserEntity user) {
+    public List<Playlist> getPlaylistByUser(User user) {
         return playlistRepository.findByUser(user);
     }
 }

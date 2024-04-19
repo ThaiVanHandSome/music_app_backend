@@ -1,15 +1,14 @@
 package vn.iostar.springbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.apachecommons.CommonsLog;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "songs")
-public class SongEntity implements Serializable {
+public class Song implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,31 +29,40 @@ public class SongEntity implements Serializable {
     @Column(name = "views")
     private int views;
 
+    @Column(name = "day_created", nullable = false)
+    private LocalDateTime dayCreated;
+
     @Column(name = "resource", nullable = false, columnDefinition = "varchar(1000)")
     private String resource;
 
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
 
+
     @JsonIgnoreProperties("songs")
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_album", referencedColumnName = "id_album")
-    private AlbumEntity album;
+    private Album album;
 
     @OneToMany(mappedBy = "song")
-    private List<PlaylistSongEntity> playlistSongs;
+    private List<PlaylistSong> playlistSongs;
 
     @OneToMany(mappedBy = "song")
-    private List<SongLikedEntity> songLikeds;
+    private List<SongLiked> songLikeds;
 
     @OneToMany(mappedBy = "song")
-    private List<ArtistSongEntity> artistSongs;
+    private List<ArtistSong> artistSongs;
 
     @OneToMany(mappedBy = "song")
-    private List<SongCommentEntity> songComments;
+    private List<SongComment> songComments;
 
-    public SongEntity(Long idSong) {
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_song_category", referencedColumnName = "id_song_category")
+    private SongCategory songCategory;
+
+    public Song(Long idSong) {
         this.idSong = idSong;
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "song_comments")
-public class SongCommentEntity implements Serializable {
+public class SongComment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,17 +32,17 @@ public class SongCommentEntity implements Serializable {
     private LocalDateTime dayCommented;
 
     @OneToMany(mappedBy = "songComment")
-    private List<CommentLikedEntity> commentLikeds;
+    private List<CommentLiked> commentLikeds;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song")
-    private SongEntity song;
+    private Song song;
 
     public Long getIdComment() {
         return idComment;
@@ -76,27 +76,27 @@ public class SongCommentEntity implements Serializable {
         this.dayCommented = dayCommented;
     }
 
-    public List<CommentLikedEntity> getCommentLikeds() {
+    public List<CommentLiked> getCommentLikeds() {
         return commentLikeds;
     }
 
-    public void setCommentLikeds(List<CommentLikedEntity> commentLikeds) {
+    public void setCommentLikeds(List<CommentLiked> commentLikeds) {
         this.commentLikeds = commentLikeds;
     }
 
-    public UserEntity getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public SongEntity getSong() {
+    public Song getSong() {
         return song;
     }
 
-    public void setSong(SongEntity song) {
+    public void setSong(Song song) {
         this.song = song;
     }
 }
