@@ -29,7 +29,7 @@ public class SpringbootBackendApplication {
 
 	@PostConstruct
 	public void setup() {
-		Twilio.init("AC63d379c9ec51ed97ad936fa94f98e5e8", "048587e349047d8b7d5ea3b7e13a37e7");
+		Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
 	}
 
 	public static void main(String[] args) {

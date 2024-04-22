@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RegisterResponse {
+    private boolean error;
+    private boolean success;
     private String message;
 }
