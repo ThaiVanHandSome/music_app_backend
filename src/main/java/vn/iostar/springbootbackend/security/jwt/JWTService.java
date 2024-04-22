@@ -35,10 +35,6 @@ public class JWTService {
         return generateAccessToken(new HashMap<>(), userDetails);
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
-        return generateRefreshToken(new HashMap<>(), userDetails);
-    }
-
     public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         extraClaims.put("ROLE", userDetails.getAuthorities());
         return Jwts
@@ -50,20 +46,6 @@ public class JWTService {
                 .signWith(SignatureAlgorithm.HS256, getSignInKey())
                 .compact();
     }
-
-    public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        extraClaims.put("ROLE", userDetails.getAuthorities());
-        return Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-                .signWith(SignatureAlgorithm.HS256, getSignInKey())
-                .compact();
-    }
-
-
 
     public boolean isTokenValid(String token, UserDetails userDetails, HttpServletResponse response) throws IOException {
         final String username = extractUserEmail(token, response);

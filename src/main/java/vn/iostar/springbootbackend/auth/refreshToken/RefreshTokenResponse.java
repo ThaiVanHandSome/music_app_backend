@@ -1,5 +1,4 @@
-package vn.iostar.springbootbackend.auth.authentication;
-
+package vn.iostar.springbootbackend.auth.refreshToken;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,18 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthenticationResponse {
+public class RefreshTokenResponse {
     private String accessToken;
     private String refreshToken;
-
     private boolean error;
     private boolean success;
-    private Long id;
     private String message;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String avatar;
-    private int gender;
 }
-

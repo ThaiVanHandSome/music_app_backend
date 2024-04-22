@@ -9,15 +9,19 @@ import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationRequest;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationResponse;
 import vn.iostar.springbootbackend.auth.email.EmailService;
+import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenRequest;
+import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenResponse;
 import vn.iostar.springbootbackend.auth.registration.EmailValidator;
 import vn.iostar.springbootbackend.auth.registration.RegisterRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
 import vn.iostar.springbootbackend.auth.registration.token.ConfirmationToken;
 import vn.iostar.springbootbackend.auth.registration.token.ConfirmationTokenService;
+import vn.iostar.springbootbackend.entity.RefreshToken;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.UserRepository;
 import vn.iostar.springbootbackend.security.jwt.JWTService;
+import vn.iostar.springbootbackend.service.impl.RefreshTokenService;
 import vn.iostar.springbootbackend.service.impl.UserService;
 
 import java.time.LocalDateTime;
@@ -41,6 +45,9 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     private final EmailValidator emailValidator;
 
     private final AuthenticationManager authenticationManager;
@@ -56,6 +63,7 @@ public class AuthService {
                     .lastName(request.getLastName())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
+                    .phoneNumber(request.getPhoneNumber())
                     .role(Role.USER)
                     .isActive(false)
                     .build();
@@ -95,13 +103,17 @@ public class AuthService {
         }
         User user = opt.get();
         if(!user.isActive()) {
-            throw new IllegalStateException("Account Not Confirm!");
+            return AuthenticationResponse.builder()
+                    .error(true)
+                    .success(false)
+                    .message("Account Not Confirm!")
+                    .build();
         }
         var jwtToken = jwtService.generateAccessToken(user);
-        var jwtRefreshToken = jwtService.generateRefreshToken(user);
+        var jwtRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
         return AuthenticationResponse.builder()
-                .access_token(jwtToken)
-                .refresh_token(jwtRefreshToken)
+                .accessToken(jwtToken)
+                .refreshToken(jwtRefreshToken.getToken())
                 .id(user.getIdUser())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -195,5 +207,23 @@ public class AuthService {
                 "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
                 "\n" +
                 "</div></div>";
+    }
+
+    public Object refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        return refreshTokenService.findByToken(refreshTokenRequest.getToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtService.generateAccessToken(user);
+                    return RefreshTokenResponse.builder()
+                            .accessToken(accessToken)
+                            .refreshToken(refreshTokenRequest.getToken())
+                            .error(false)
+                            .success(true)
+                            .message("Refresh Token Successfully!")
+                            .build();
+                })
+                .orElseThrow(() -> new RuntimeException(
+                        "Refresh Token not in database!"));
     }
 }

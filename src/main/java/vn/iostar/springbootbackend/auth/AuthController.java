@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationRequest;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationResponse;
+import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
+import vn.iostar.springbootbackend.entity.RefreshToken;
+import vn.iostar.springbootbackend.service.impl.RefreshTokenService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -14,6 +17,8 @@ import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
 public class AuthController {
 
     private final AuthService service;
+
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(
@@ -32,5 +37,10 @@ public class AuthController {
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return ResponseEntity.ok(service.refreshToken(refreshTokenRequest));
     }
 }
