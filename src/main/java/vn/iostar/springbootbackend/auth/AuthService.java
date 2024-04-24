@@ -105,7 +105,7 @@ public class AuthService {
         );
         Optional<User> opt = repository.findByEmail(request.getEmail());
         if(opt.isEmpty()) {
-            return AuthenticationResponse.builder().error(true).message("Email or Password wrong!").build();
+            return AuthenticationResponse.builder().error(true).message("Email or Password wrong!").success(false).build();
         }
         User user = opt.get();
         if(!user.isActive()) {
@@ -133,25 +133,29 @@ public class AuthService {
     }
 
     public RegisterResponse confirmToken(String token) {
-        ConfirmationToken confirmationToken = confirmationTokenService.getToken(token).orElseThrow(() -> new IllegalStateException("Token Not Found!"));
-        if(confirmationToken.getConfirmedAt() != null) {
-            return RegisterResponse.builder()
-                    .message("Email Already Confirmed")
-                    .error(true)
-                    .success(false)
-                    .build();
+        Optional<ConfirmationToken> otpConfirmationToken = confirmationTokenService.getToken(token);
+        if(otpConfirmationToken.isPresent()) {
+            ConfirmationToken confirmationToken = otpConfirmationToken.get();
+            if(confirmationToken.getConfirmedAt() != null) {
+                return RegisterResponse.builder()
+                        .message("Email Already Confirmed")
+                        .error(true)
+                        .success(false)
+                        .build();
+            }
+            LocalDateTime expiredAt = confirmationToken.getExpiredAt();
+            if(expiredAt.isBefore(LocalDateTime.now())) {
+                return RegisterResponse.builder()
+                        .message("Token Expired")
+                        .error(true)
+                        .success(false)
+                        .build();
+            }
+            confirmationTokenService.setConfirmedAt(token);
+            userService.enableUser(confirmationToken.getUser().getEmail());
+            return RegisterResponse.builder().message("Confirmed!").error(false).success(true).build();
         }
-        LocalDateTime expiredAt = confirmationToken.getExpiredAt();
-        if(expiredAt.isBefore(LocalDateTime.now())) {
-            return RegisterResponse.builder()
-                    .message("Token Expired")
-                    .error(true)
-                    .success(false)
-                    .build();
-        }
-        confirmationTokenService.setConfirmedAt(token);
-        userService.enableUser(confirmationToken.getUser().getEmail());
-        return RegisterResponse.builder().message("Confirmed!").error(false).success(true).build();
+        return RegisterResponse.builder().message("Token Not Valid!").error(true).success(false).build();
     }
 
     private String buildEmailOTP(String name, String otp) {
