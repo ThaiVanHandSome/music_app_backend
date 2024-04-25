@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationRequest;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationResponse;
 import vn.iostar.springbootbackend.auth.email.EmailService;
+import vn.iostar.springbootbackend.auth.email.otp.OtpResponse;
 import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenRequest;
 import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenResponse;
 import vn.iostar.springbootbackend.auth.registration.EmailValidator;
@@ -132,12 +133,12 @@ public class AuthService {
                 .build();
     }
 
-    public RegisterResponse confirmToken(String token) {
+    public OtpResponse confirmToken(String token, String type) {
         Optional<ConfirmationToken> otpConfirmationToken = confirmationTokenService.getToken(token);
         if(otpConfirmationToken.isPresent()) {
             ConfirmationToken confirmationToken = otpConfirmationToken.get();
             if(confirmationToken.getConfirmedAt() != null) {
-                return RegisterResponse.builder()
+                return OtpResponse.builder()
                         .message("Email Already Confirmed")
                         .error(true)
                         .success(false)
@@ -145,7 +146,7 @@ public class AuthService {
             }
             LocalDateTime expiredAt = confirmationToken.getExpiredAt();
             if(expiredAt.isBefore(LocalDateTime.now())) {
-                return RegisterResponse.builder()
+                return OtpResponse.builder()
                         .message("Token Expired")
                         .error(true)
                         .success(false)
@@ -153,19 +154,50 @@ public class AuthService {
             }
             confirmationTokenService.setConfirmedAt(token);
             userService.enableUser(confirmationToken.getUser().getEmail());
-            return RegisterResponse.builder().message("Confirmed!").error(false).success(true).build();
+            return OtpResponse.builder().message("Confirmed!").type(type).error(false).success(true).build();
         }
-        return RegisterResponse.builder().message("Token Not Valid!").error(true).success(false).build();
+        return OtpResponse.builder().message("Token Not Valid!").error(true).success(false).build();
     }
 
     private String buildEmailOTP(String name, String otp) {
         return "<html>\n" +
+                "  <head>\n" +
+                "    <style>\n" +
+                "      body {\n" +
+                "        font-family: Arial, sans-serif;\n" +
+                "        background-color: #f4f4f4;\n" +
+                "        margin: 0;\n" +
+                "        padding: 0;\n" +
+                "      }\n" +
+                "      .container {\n" +
+                "        max-width: 600px;\n" +
+                "        margin: 50px auto;\n" +
+                "        padding: 20px;\n" +
+                "        background-color: #fff;\n" +
+                "        border-radius: 10px;\n" +
+                "        box-shadow: 0 0 10px rgba(0,0,0,0.1);\n" +
+                "      }\n" +
+                "      h1 {\n" +
+                "        color: #333;\n" +
+                "      }\n" +
+                "      h2 {\n" +
+                "        color: #555;\n" +
+                "      }\n" +
+                "      span {\n" +
+                "        color: #ff0000;\n" +
+                "        font-weight: bold;\n" +
+                "      }\n" +
+                "    </style>\n" +
+                "  </head>\n" +
                 "  <body>\n" +
-                "    <h1>Xin Chào "+ name + "!</h1>\n" +
-                "    <h2>Mã OTP để xác nhận account của bạn là: <span style=\"color: red;\">"+otp+"</span></h2>\n" +
+                "    <div class=\"container\">\n" +
+                "      <h1>Xin Chào, " + name + "!</h1>\n" +
+                "      <h2>Mã OTP để xác nhận tài khoản của bạn là: <span>" + otp + "</span></h2>\n" +
+                "    </div>\n" +
                 "  </body>\n" +
                 "</html>";
     }
+
 
     public Object refreshToken(RefreshTokenRequest refreshTokenRequest) {
         return refreshTokenService.findByToken(refreshTokenRequest.getToken())
@@ -190,7 +222,7 @@ public class AuthService {
                 .format(new Random().nextInt(999999));
     }
 
-    public Object sendEmail(String email) {
+    public RegisterResponse sendEmail(String email) {
         Optional<User> optUser = userService.getUserByEmail(email);
         if(optUser.isPresent()) {
             User user = optUser.get();

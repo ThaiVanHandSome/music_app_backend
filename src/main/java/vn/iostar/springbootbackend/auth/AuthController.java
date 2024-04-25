@@ -23,19 +23,19 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(
+    public ResponseEntity<?> register(
             @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @GetMapping("/register/confirm")
-    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
-        return ResponseEntity.ok(service.confirmToken(token));
+    public ResponseEntity<?> confirm(@RequestParam("token") String token, @RequestParam("type") String type) {
+        return ResponseEntity.ok(service.confirmToken(token, type));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
+    public ResponseEntity<?> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
