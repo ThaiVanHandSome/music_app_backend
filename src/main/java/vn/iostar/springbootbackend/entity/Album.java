@@ -1,7 +1,6 @@
 package vn.iostar.springbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "albums")
-public class AlbumEntity implements Serializable {
+public class Album implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +32,10 @@ public class AlbumEntity implements Serializable {
     private String image;
 
     @OneToMany(mappedBy = "album")
-    private List<SongEntity> songs;
+    private List<Song> songs;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist")
-    private ArtistEntity artist;
+    private Artist artist;
 }

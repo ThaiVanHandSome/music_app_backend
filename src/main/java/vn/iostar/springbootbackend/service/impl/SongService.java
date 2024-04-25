@@ -1,8 +1,8 @@
 package vn.iostar.springbootbackend.service.impl;
 
 import org.springframework.stereotype.Service;
-import vn.iostar.springbootbackend.entity.AlbumEntity;
-import vn.iostar.springbootbackend.entity.SongEntity;
+import vn.iostar.springbootbackend.entity.Album;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.repository.SongRepository;
 
 import java.util.List;
@@ -16,26 +16,30 @@ public class SongService {
         this.songRepository = songRepository;
     }
 
-    public List<SongEntity> getAllSongs() {
+    public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
-    public Optional<SongEntity> getSongById(Long id) {
+    public Optional<Song> getSongById(Long id) {
         return songRepository.findById(id);
     }
 
-    public List<SongEntity> getSongViewHigherThanSomeValue(int val) {
+    public List<Song> getSongViewHigherThanSomeValue(int val) {
         return songRepository.findByViewsGreaterThan(val);
     }
 
-    public List<SongEntity> getSongByAlbum(AlbumEntity album) {
+    public List<Song> getSongByAlbum(Album album) {
         return songRepository.findByAlbum(album);
     }
 
-    public List<SongEntity> getSongsByKeyWord(String keyword) {
+    public List<Song> getSongsByKeyWord(String keyword) {
         return songRepository.findByNameContaining(keyword);
     }
 
     public void increaseViewOfSong(Long id) {
         songRepository.incrementViewCount(id);
+    }
+
+    public Optional<Song> getSongbyId(Long id){
+        return  songRepository.findById(id);
     }
 }

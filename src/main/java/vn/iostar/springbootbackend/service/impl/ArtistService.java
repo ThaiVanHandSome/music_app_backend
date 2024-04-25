@@ -1,7 +1,7 @@
 package vn.iostar.springbootbackend.service.impl;
 
 import org.springframework.stereotype.Service;
-import vn.iostar.springbootbackend.entity.ArtistEntity;
+import vn.iostar.springbootbackend.entity.Artist;
 import vn.iostar.springbootbackend.repository.ArtistRepository;
 
 import java.util.List;
@@ -15,15 +15,15 @@ public class ArtistService {
         this.artistRepository = artistRepository;
     }
 
-    public List<ArtistEntity> getAllArtists() {
+    public List<Artist> getAllArtists() {
         return artistRepository.findAll();
     }
 
-    public Optional<ArtistEntity> getArtistById(Long id) {
+    public Optional<Artist> getArtistById(Long id) {
         return artistRepository.findById(id);
     }
 
-    public List<ArtistEntity> getArtistByKeyword(String keyword) {
+    public List<Artist> getArtistByKeyword(String keyword) {
         return artistRepository.findByNameContaining(keyword);
     }
 }

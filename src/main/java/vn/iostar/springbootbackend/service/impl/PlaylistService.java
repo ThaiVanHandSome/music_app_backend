@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.PlaylistSongId;
 import vn.iostar.springbootbackend.entity.*;
+import vn.iostar.springbootbackend.entity.Playlist;
+import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.PlaylistRepository;
 import vn.iostar.springbootbackend.repository.PlaylistSongRepository;
 import vn.iostar.springbootbackend.repository.UserRepository;

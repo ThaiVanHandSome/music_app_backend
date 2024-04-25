@@ -1,6 +1,7 @@
 package vn.iostar.springbootbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.entity.Playlist;
@@ -19,13 +20,13 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
-
+  
     @Autowired
     private PlaylistService playlistService;
 
     @Autowired
     private SongLikedService songLikedService;
-
+  
     @PatchMapping("/{idUser}")
     public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, Object> fields) {
         User user = userService.updateUserByFields(idUser, fields);
@@ -45,6 +46,7 @@ public class UserController {
         String email = reqBody.get("email");
         return ResponseEntity.ok(userService.changePasswordForgot(email, password));
     }
+  
     @GetMapping("{id_user}/playlists")
     public ResponseEntity<?> getPlaylistsByIdUser(@PathVariable("id_user") Long idUser) {
         List<Playlist> playlists = playlistService.getPlaylistsByIdUser(idUser);

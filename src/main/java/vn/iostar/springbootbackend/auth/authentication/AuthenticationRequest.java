@@ -1,5 +1,4 @@
-package vn.iostar.springbootbackend.auth;
-
+package vn.iostar.springbootbackend.auth.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AuthenticationResponse {
-    private String token;
+public class AuthenticationRequest {
+    private String email;
+    private String password;
 }
-

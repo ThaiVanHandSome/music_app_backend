@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "playlists")
-public class PlaylistEntity implements Serializable {
+public class Playlist implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +34,8 @@ public class PlaylistEntity implements Serializable {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    private UserEntity user;
+    private User user;
 
     @OneToMany(mappedBy = "playlist")
-    private List<PlaylistSongEntity> playlistSongs;
+    private List<PlaylistSong> playlistSongs;
 }

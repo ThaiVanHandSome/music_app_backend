@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "artists")
-public class ArtistEntity implements Serializable {
+public class Artist implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +37,11 @@ public class ArtistEntity implements Serializable {
     private String avatar;
 
     @OneToMany(mappedBy = "artist")
-    private List<AlbumEntity> albums;
+    private List<Album> albums;
 
     @OneToMany(mappedBy = "artist")
-    private List<ArtistSongEntity> artistSongs;
+    private List<ArtistSong> artistSongs;
+
+    @OneToMany(mappedBy = "artist")
+    private List<FollowArtist> followArtists;
 }

@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import vn.iostar.springbootbackend.auth.registration.token.ConfirmationToken;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -19,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,9 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "last_name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String lastName;
+
+    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(20)")
+    private String phoneNumber;
 
     @Column(name = "email", nullable = false, columnDefinition = "varchar(1000)")
     private String email;
@@ -48,23 +52,30 @@ public class UserEntity implements UserDetails {
     private boolean isActive;
 
     @OneToMany(mappedBy = "user")
-    private List<CommentLikedEntity> commentLikeds;
+    private List<CommentLiked> commentLikeds;
 
     @OneToMany(mappedBy = "user")
-    private List<PlaylistEntity> playlists;
+    private List<Playlist> playlists;
 
     @OneToMany(mappedBy = "user")
-    private List<SongCommentEntity> songComments;
+    private List<SongComment> songComments;
 
     @OneToMany(mappedBy = "song")
-    private List<SongLikedEntity> songLikeds;
+    private List<SongLiked> songLikeds;
+
+    @OneToMany(mappedBy = "user")
+    private List<FollowArtist> followArtists;
+
+    @OneToMany(mappedBy = "user")
+    private List<ConfirmationToken> confirmationTokens;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+        return Collections.singleton(authority);
     }
     @Override
     public String getPassword() {

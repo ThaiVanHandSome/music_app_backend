@@ -9,10 +9,9 @@ import vn.iostar.springbootbackend.entity.PlaylistRequest;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.entity.PlaylistEntity;
 import vn.iostar.springbootbackend.entity.UserEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import vn.iostar.springbootbackend.service.impl.PlaylistService;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")

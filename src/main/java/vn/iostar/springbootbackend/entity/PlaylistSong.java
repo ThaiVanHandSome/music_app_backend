@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "playlist_songs")
-public class PlaylistSongEntity implements Serializable {
+public class PlaylistSong implements Serializable {
 
     @EmbeddedId
     private PlaylistSongId playlistSongId;
@@ -26,10 +26,10 @@ public class PlaylistSongEntity implements Serializable {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_playlist", referencedColumnName = "id_playlist", insertable = false,  updatable = false)
-    private PlaylistEntity playlist;
+    private Playlist playlist;
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false,  updatable = false)
-    private SongEntity song;
+    private Song song;
 }
