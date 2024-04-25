@@ -27,10 +27,9 @@ public class SongLikedController {
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/toggleLike")
+    @PostMapping("/toggle-like")
     public ResponseEntity<?> toggleLike(@RequestParam("songId") Long songId, @RequestParam("userId") Long userId) {
-        songLikedService.toggleLike(songId, userId);
-        boolean isLiked = songLikedService.isUserLikedSong(songId, userId);
+        boolean isLiked = songLikedService.toggleLike(songId, userId);
         Response res = new Response(true, false, "Successfully!", isLiked);
         return ResponseEntity.ok(res);
     }

@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.SongLikedId;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.SongLiked;
 import vn.iostar.springbootbackend.repository.SongLikedRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SongLikedService {
@@ -50,13 +53,20 @@ public class SongLikedService {
     }
 
     @Transactional
-    public void toggleLike(Long songId, Long userId) {
+    public boolean toggleLike(Long songId, Long userId) {
         if (isUserLikedSong(songId, userId)) {
-            songLikedRepository.deleteBySongLikedId(new SongLikedId(songId, userId));
+            songLikedRepository.deleteBySongLikedId(new SongLikedId(userId, songId));
+            return false;
         } else {
-            SongLiked songLikedEntity = new SongLiked();
-            songLikedEntity.setSongLikedId(new SongLikedId(songId, userId));
-            songLikedRepository.save(songLikedEntity);
+            SongLiked songLiked = new SongLiked();
+            songLiked.setSongLikedId(new SongLikedId(userId, songId));
+            songLiked.setDayLiked(LocalDateTime.now());
+            songLikedRepository.save(songLiked);
+            return true;
         }
+    }
+
+    public List<Song> getLikedSongsByIdUser(Long idUser) {
+        return songLikedRepository.getLikedSongsByIdUser(idUser);
     }
 }

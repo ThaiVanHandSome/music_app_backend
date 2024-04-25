@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/user/forgot-password").permitAll()
-                .antMatchers("/api/v1/user/**").authenticated()
+                .antMatchers("/api/v1/user/**").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()

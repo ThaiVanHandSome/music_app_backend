@@ -4,10 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.iostar.springbootbackend.entity.Playlist;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.response.Response;
+import vn.iostar.springbootbackend.service.impl.PlaylistService;
+import vn.iostar.springbootbackend.service.impl.SongLikedService;
 import vn.iostar.springbootbackend.service.impl.UserService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,7 +20,13 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+  
+    @Autowired
+    private PlaylistService playlistService;
 
+    @Autowired
+    private SongLikedService songLikedService;
+  
     @PatchMapping("/{idUser}")
     public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, Object> fields) {
         User user = userService.updateUserByFields(idUser, fields);
@@ -34,5 +45,19 @@ public class UserController {
         String password = reqBody.get("password");
         String email = reqBody.get("email");
         return ResponseEntity.ok(userService.changePasswordForgot(email, password));
+    }
+  
+    @GetMapping("{id_user}/playlists")
+    public ResponseEntity<?> getPlaylistsByIdUser(@PathVariable("id_user") Long idUser) {
+        List<Playlist> playlists = playlistService.getPlaylistsByIdUser(idUser);
+        Response response = new Response(true, false, "Get Playlists Success!", playlists);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("{id_user}/liked-songs")
+    public ResponseEntity<?> getLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
+        List<Song> songs = songLikedService.getLikedSongsByIdUser(idUser);
+        Response response = new Response(true, false, "Get Liked Songs Success!", songs);
+        return ResponseEntity.ok(response);
     }
 }
