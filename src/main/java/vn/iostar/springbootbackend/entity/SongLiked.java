@@ -8,6 +8,7 @@ import vn.iostar.springbootbackend.embededId.SongLikedId;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,9 @@ public class SongLiked implements Serializable {
 
     @EmbeddedId
     private SongLikedId songLikedId;
+
+    @Column(name = "day_liked")
+    private LocalDateTime dayLiked;
 
     @ManyToOne
     @JsonBackReference
