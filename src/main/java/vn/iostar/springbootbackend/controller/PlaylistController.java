@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.entity.Playlist;
 import vn.iostar.springbootbackend.entity.PlaylistRequest;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.entity.PlaylistEntity;
-import vn.iostar.springbootbackend.entity.UserEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.iostar.springbootbackend.service.impl.PlaylistService;
