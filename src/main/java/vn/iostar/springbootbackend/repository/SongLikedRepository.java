@@ -1,23 +1,33 @@
 package vn.iostar.springbootbackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import vn.iostar.springbootbackend.embededId.SongLikedId;
-import vn.iostar.springbootbackend.entity.SongLikedEntity;
+import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.SongLiked;
+
+import java.util.List;
 
 @Repository
-public interface SongLikedRepository extends JpaRepository<SongLikedEntity, Long> {
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1")
+public interface SongLikedRepository extends JpaRepository<SongLiked, Long> {
+    @Query("SELECT COUNT(s) FROM SongLiked s WHERE s.songLikedId.idSong = ?1")
     Long countLikesBySongId(Long songId);
 
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
+    @Query("SELECT COUNT(s) FROM SongLiked s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
     Long countLikesBySongIdAndUserId(Long songId, Long userId);
 
     default boolean isUserLikedSong(Long songId, Long userId) {
         return countLikesBySongIdAndUserId(songId, userId) > 0;
     }
 
-    void deleteBySongLikedId(SongLikedId songLikedId);
+    @Query("SELECT s.song FROM SongLiked s WHERE s.songLikedId.idUser = ?1 ORDER BY s.dayLiked DESC")
+    List<Song> getLikedSongsByIdUser(Long idUser);
 
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM SongLiked s WHERE s.songLikedId = ?1")
+    void deleteBySongLikedId(SongLikedId songLikedId);
 }

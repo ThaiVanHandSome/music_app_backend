@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.SongLikedId;
-import vn.iostar.springbootbackend.entity.SongLikedEntity;
+import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.SongLiked;
 import vn.iostar.springbootbackend.repository.SongLikedRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SongLikedService {
@@ -19,12 +22,12 @@ public class SongLikedService {
         this.songLikedRepository = songLikedRepository;
     }
 
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1")
+    @Query("SELECT COUNT(s) FROM SongLiked s WHERE s.songLikedId.idSong = ?1")
     public Long countLikesBySongId(Long songId) {
         return songLikedRepository.countLikesBySongId(songId);
     }
 
-    @Query("SELECT COUNT(s) FROM SongLikedEntity s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
+    @Query("SELECT COUNT(s) FROM SongLiked s WHERE s.songLikedId.idSong = ?1 AND s.songLikedId.idUser = ?2")
     public Long countLikesBySongIdAndUserId(Long songId, Long userId) {
         return songLikedRepository.countLikesBySongIdAndUserId(songId, userId);
     }
@@ -33,7 +36,7 @@ public class SongLikedService {
         return songLikedRepository.isUserLikedSong(songId, userId);
     }
 
-    public <S extends SongLikedEntity> S save(S entity) {
+    public <S extends SongLiked> S save(S entity) {
         return songLikedRepository.save(entity);
     }
 
@@ -41,7 +44,7 @@ public class SongLikedService {
         songLikedRepository.deleteById(aLong);
     }
 
-    public void delete(SongLikedEntity entity) {
+    public void delete(SongLiked entity) {
         songLikedRepository.delete(entity);
     }
 
@@ -50,13 +53,20 @@ public class SongLikedService {
     }
 
     @Transactional
-    public void toggleLike(Long songId, Long userId) {
+    public boolean toggleLike(Long songId, Long userId) {
         if (isUserLikedSong(songId, userId)) {
-            songLikedRepository.deleteBySongLikedId(new SongLikedId(songId, userId));
+            songLikedRepository.deleteBySongLikedId(new SongLikedId(userId, songId));
+            return false;
         } else {
-            SongLikedEntity songLikedEntity = new SongLikedEntity();
-            songLikedEntity.setSongLikedId(new SongLikedId(songId, userId));
-            songLikedRepository.save(songLikedEntity);
+            SongLiked songLiked = new SongLiked();
+            songLiked.setSongLikedId(new SongLikedId(userId, songId));
+            songLiked.setDayLiked(LocalDateTime.now());
+            songLikedRepository.save(songLiked);
+            return true;
         }
+    }
+
+    public List<Song> getLikedSongsByIdUser(Long idUser) {
+        return songLikedRepository.getLikedSongsByIdUser(idUser);
     }
 }
