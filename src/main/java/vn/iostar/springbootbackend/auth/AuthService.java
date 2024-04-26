@@ -12,24 +12,24 @@ import vn.iostar.springbootbackend.auth.email.EmailService;
 import vn.iostar.springbootbackend.auth.email.otp.OtpResponse;
 import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenRequest;
 import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenResponse;
-import vn.iostar.springbootbackend.auth.registration.EmailValidator;
+import vn.iostar.springbootbackend.auth.email.EmailValidator;
 import vn.iostar.springbootbackend.auth.registration.RegisterRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
-import vn.iostar.springbootbackend.auth.registration.token.ConfirmationToken;
-import vn.iostar.springbootbackend.auth.registration.token.ConfirmationTokenService;
+import vn.iostar.springbootbackend.entity.ConfirmationToken;
+import vn.iostar.springbootbackend.model.ResponseMessage;
+import vn.iostar.springbootbackend.service.ConfirmationTokenService;
 import vn.iostar.springbootbackend.entity.RefreshToken;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.UserRepository;
 import vn.iostar.springbootbackend.security.jwt.JWTService;
-import vn.iostar.springbootbackend.service.impl.RefreshTokenService;
-import vn.iostar.springbootbackend.service.impl.UserService;
+import vn.iostar.springbootbackend.service.RefreshTokenService;
+import vn.iostar.springbootbackend.service.UserService;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -83,7 +83,7 @@ public class AuthService {
             confirmationTokenService.saveConfirmationToken(confirmationToken);
             emailService.send(request.getEmail(), buildEmailOTP(request.getFirstName() + " " + request.getLastName(), token));
             return RegisterResponse.builder()
-                    .message("Please Check Email To See OTP!")
+                    .message("Register Successfully! Please Check Email To See OTP!")
                     .error(false)
                     .success(true)
                     .build();
@@ -106,13 +106,14 @@ public class AuthService {
         );
         Optional<User> opt = repository.findByEmail(request.getEmail());
         if(opt.isEmpty()) {
-            return AuthenticationResponse.builder().error(true).message("Email or Password wrong!").success(false).build();
+            return AuthenticationResponse.builder().error(true).type("wrong").message("Email or Password wrong!").success(false).build();
         }
         User user = opt.get();
         if(!user.isActive()) {
             return AuthenticationResponse.builder()
                     .error(true)
                     .success(false)
+                    .type("confirm")
                     .message("Account Not Confirm!")
                     .build();
         }
@@ -129,7 +130,7 @@ public class AuthService {
                 .gender(user.getGender())
                 .error(false)
                 .success(true)
-                .message("Successfully!")
+                .message("Login Successfully!")
                 .build();
     }
 
@@ -139,7 +140,7 @@ public class AuthService {
             ConfirmationToken confirmationToken = otpConfirmationToken.get();
             if(confirmationToken.getConfirmedAt() != null) {
                 return OtpResponse.builder()
-                        .message("Email Already Confirmed")
+                        .message("Email Already Confirmed!")
                         .error(true)
                         .success(false)
                         .build();
@@ -147,14 +148,14 @@ public class AuthService {
             LocalDateTime expiredAt = confirmationToken.getExpiredAt();
             if(expiredAt.isBefore(LocalDateTime.now())) {
                 return OtpResponse.builder()
-                        .message("Token Expired")
+                        .message("Token Expired! Please User New Token!")
                         .error(true)
                         .success(false)
                         .build();
             }
             confirmationTokenService.setConfirmedAt(token);
             userService.enableUser(confirmationToken.getUser().getEmail());
-            return OtpResponse.builder().message("Confirmed!").type(type).error(false).success(true).build();
+            return OtpResponse.builder().message("Successfully! Confirmed!").type(type).error(false).success(true).build();
         }
         return OtpResponse.builder().message("Token Not Valid!").error(true).success(false).build();
     }
@@ -186,13 +187,17 @@ public class AuthService {
                 "      span {\n" +
                 "        color: #ff0000;\n" +
                 "        font-weight: bold;\n" +
+                "        letter-spacing: 2px;\n" +
+                "        font-size: 24px;\n" +
                 "      }\n" +
                 "    </style>\n" +
                 "  </head>\n" +
                 "  <body>\n" +
                 "    <div class=\"container\">\n" +
                 "      <h1>Xin Chào, " + name + "!</h1>\n" +
+                "      <h3>Cảm ơn bạn đã đăng ký tài khoản cho ứng dụng của chúng tôi!</h3>\n" +
                 "      <h2>Mã OTP để xác nhận tài khoản của bạn là: <span>" + otp + "</span></h2>\n" +
+                "      <h3>Trân trọng!</h3>\n" +
                 "    </div>\n" +
                 "  </body>\n" +
                 "</html>";
@@ -222,7 +227,7 @@ public class AuthService {
                 .format(new Random().nextInt(999999));
     }
 
-    public RegisterResponse sendEmail(String email) {
+    public ResponseMessage sendEmail(String email) {
         Optional<User> optUser = userService.getUserByEmail(email);
         if(optUser.isPresent()) {
             User user = optUser.get();
@@ -237,14 +242,14 @@ public class AuthService {
             optConfirmationToken.ifPresent(value -> confirmationTokenService.delete(value));
             confirmationTokenService.saveConfirmationToken(confirmationToken);
             emailService.send(email, buildEmailOTP(user.getFirstName() + " " + user.getLastName(), token));
-            return RegisterResponse.builder()
-                    .message("Please Check Email To See OTP!")
+            return ResponseMessage.builder()
+                    .message("Successfully! Please Check Email To See OTP!")
                     .error(false)
                     .success(true)
                     .build();
         }
-        return RegisterResponse.builder()
-                .message("Email Not Register!")
+        return ResponseMessage.builder()
+                .message("Email Not Register! Please Enter Another Email!")
                 .error(true)
                 .success(false)
                 .build();

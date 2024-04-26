@@ -22,6 +22,6 @@ public class SongCategory {
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
 
-    @OneToMany(mappedBy = "songCategory")
+    @OneToMany(mappedBy = "songCategory", cascade = CascadeType.ALL)
     private List<Song> songs;
 }

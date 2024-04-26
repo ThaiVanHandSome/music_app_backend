@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.service.impl;
+package vn.iostar.springbootbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

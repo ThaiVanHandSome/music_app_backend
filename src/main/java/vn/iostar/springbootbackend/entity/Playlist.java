@@ -31,11 +31,11 @@ public class Playlist implements Serializable {
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
-    @OneToMany(mappedBy = "playlist")
+    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL)
     private List<PlaylistSong> playlistSongs;
 }

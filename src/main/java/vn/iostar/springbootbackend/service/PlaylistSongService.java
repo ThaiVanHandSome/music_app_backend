@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.service.impl;
+package vn.iostar.springbootbackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

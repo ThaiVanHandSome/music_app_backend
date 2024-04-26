@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.service.impl;
+package vn.iostar.springbootbackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import vn.iostar.springbootbackend.embededId.PlaylistSongId;
 import vn.iostar.springbootbackend.entity.*;
 import vn.iostar.springbootbackend.entity.Playlist;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.PlaylistRequest;
 import vn.iostar.springbootbackend.repository.PlaylistRepository;
 import vn.iostar.springbootbackend.repository.PlaylistSongRepository;
 import vn.iostar.springbootbackend.repository.UserRepository;
@@ -13,6 +14,7 @@ import vn.iostar.springbootbackend.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaylistService {
@@ -64,11 +66,12 @@ public class PlaylistService {
         return playlistRepository.save(savedPlaylist);
     }
 
-    public void deletePlaylist(Long idPlaylist) {
-        Playlist playlist = playlistRepository.findById(idPlaylist).orElseThrow(
-                () -> new RuntimeException("Playlist not found")
-        );
-        playlist.getPlaylistSongs().clear();
-        playlistRepository.deleteById(playlist.getIdPlaylist());
+    public Optional<Playlist> getPlaylistById(Long idPlaylist) {
+        return playlistRepository.findById(idPlaylist);
+    }
+
+    public void deletePlaylist(Playlist playlist) {
+        //playlist.getPlaylistSongs().clear();
+        playlistRepository.delete(playlist);
     }
 }

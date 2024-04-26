@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.auth.registration.token;
+package vn.iostar.springbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;

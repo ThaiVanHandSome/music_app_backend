@@ -18,12 +18,12 @@ public class CommentLiked implements Serializable {
     @EmbeddedId
     private CommentLikedId commentLikedId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_comment", referencedColumnName = "id_comment", insertable = false,  updatable = false)
     private SongComment songComment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false,  updatable = false)
     private User user;

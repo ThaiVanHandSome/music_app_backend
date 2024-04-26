@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.service.impl;
+package vn.iostar.springbootbackend.service;
 
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.entity.Album;

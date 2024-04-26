@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.service.impl;
+package vn.iostar.springbootbackend.service;
 
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.entity.Artist;
@@ -25,5 +25,9 @@ public class ArtistService {
 
     public List<Artist> getArtistByKeyword(String keyword) {
         return artistRepository.findByNameContaining(keyword);
+    }
+
+    public void deleteArtist(Artist artist) {
+        artistRepository.delete(artist);
     }
 }

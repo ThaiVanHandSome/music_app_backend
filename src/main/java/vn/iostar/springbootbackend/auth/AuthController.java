@@ -9,7 +9,7 @@ import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
 import vn.iostar.springbootbackend.entity.RefreshToken;
-import vn.iostar.springbootbackend.service.impl.RefreshTokenService;
+import vn.iostar.springbootbackend.service.RefreshTokenService;
 
 import java.util.Map;
 

@@ -40,24 +40,24 @@ public class Song implements Serializable {
 
 
     @JsonIgnoreProperties("songs")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_album", referencedColumnName = "id_album")
     private Album album;
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
     private List<PlaylistSong> playlistSongs;
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
     private List<SongLiked> songLikeds;
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
     private List<ArtistSong> artistSongs;
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
     private List<SongComment> songComments;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_song_category", referencedColumnName = "id_song_category")
     private SongCategory songCategory;

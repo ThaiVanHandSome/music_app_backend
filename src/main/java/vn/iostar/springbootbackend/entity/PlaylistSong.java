@@ -23,12 +23,12 @@ public class PlaylistSong implements Serializable {
     @Column(name = "day_added")
     private LocalDateTime dayAdded;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_playlist", referencedColumnName = "id_playlist", insertable = false,  updatable = false)
     private Playlist playlist;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false,  updatable = false)
     private Song song;
