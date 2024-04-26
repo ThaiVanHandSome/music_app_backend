@@ -28,7 +28,7 @@ public class EmailService implements EmailSender{
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("Confirm your email");
+            helper.setSubject("[CisnW] Please Confirm Your Email");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             LOGGER.error("Failed to send email!", e);

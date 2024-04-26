@@ -31,10 +31,10 @@ public class Album implements Serializable {
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
 
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
     private List<Song> songs;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist")
     private Artist artist;

@@ -1,8 +1,10 @@
-package vn.iostar.springbootbackend.auth.registration.token;
+package vn.iostar.springbootbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import vn.iostar.springbootbackend.entity.ConfirmationToken;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.repository.ConfirmationTokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

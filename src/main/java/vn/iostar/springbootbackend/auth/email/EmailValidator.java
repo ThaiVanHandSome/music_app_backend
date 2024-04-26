@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.auth.registration;
+package vn.iostar.springbootbackend.auth.email;
 
 import org.springframework.stereotype.Service;
 

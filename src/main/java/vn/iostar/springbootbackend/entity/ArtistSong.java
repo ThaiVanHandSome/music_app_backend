@@ -21,18 +21,13 @@ public class ArtistSong implements Serializable {
     @EmbeddedId
     private ArtistSongId artistSongId;
 
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist", insertable = false, updatable = false)
     private Artist artist;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_song", referencedColumnName = "id_song", insertable = false, updatable = false)
     private Song song;
-
-    public void setArtistSongId(ArtistSongId artistSongId) {
-        this.artistSongId = artistSongId;
-    }
 }

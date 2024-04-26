@@ -7,7 +7,7 @@ import vn.iostar.springbootbackend.embededId.PlaylistSongId;
 import vn.iostar.springbootbackend.entity.PlaylistSong;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.impl.PlaylistSongService;
+import vn.iostar.springbootbackend.service.PlaylistSongService;
 
 import java.time.LocalDateTime;
 import java.util.List;

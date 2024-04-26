@@ -1,4 +1,4 @@
-package vn.iostar.springbootbackend.security.jwt;
+package vn.iostar.springbootbackend.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -17,12 +17,12 @@ public class FollowArtist {
     @EmbeddedId
     private FollowArtistId followArtistId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_artist", referencedColumnName = "id_artist", insertable = false, updatable = false)
     private Artist artist;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false, updatable = false)
     private User user;

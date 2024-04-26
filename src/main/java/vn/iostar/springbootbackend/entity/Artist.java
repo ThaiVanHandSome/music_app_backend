@@ -36,12 +36,12 @@ public class Artist implements Serializable {
     @Column(name = "avatar", nullable = false, columnDefinition = "varchar(1000)")
     private String avatar;
 
-    @OneToMany(mappedBy = "artist")
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
     private List<Album> albums;
 
-    @OneToMany(mappedBy = "artist")
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
     private List<ArtistSong> artistSongs;
 
-    @OneToMany(mappedBy = "artist")
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
     private List<FollowArtist> followArtists;
 }

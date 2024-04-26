@@ -8,9 +8,9 @@ import vn.iostar.springbootbackend.entity.Playlist;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.impl.PlaylistService;
-import vn.iostar.springbootbackend.service.impl.SongLikedService;
-import vn.iostar.springbootbackend.service.impl.UserService;
+import vn.iostar.springbootbackend.service.PlaylistService;
+import vn.iostar.springbootbackend.service.SongLikedService;
+import vn.iostar.springbootbackend.service.UserService;
 
 import java.util.List;
 import java.util.Map;

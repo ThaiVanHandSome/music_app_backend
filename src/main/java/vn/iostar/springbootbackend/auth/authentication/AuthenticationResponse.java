@@ -16,6 +16,7 @@ public class AuthenticationResponse {
 
     private boolean error;
     private boolean success;
+    private String type;
     private Long id;
     private String message;
     private String firstName;

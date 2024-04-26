@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.impl.ArtistSongService;
+import vn.iostar.springbootbackend.service.ArtistSongService;
 
 import java.util.List;
 

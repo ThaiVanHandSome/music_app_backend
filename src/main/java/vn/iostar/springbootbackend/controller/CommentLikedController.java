@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.impl.CommentLikedService;
-import vn.iostar.springbootbackend.service.impl.SongLikedService;
+import vn.iostar.springbootbackend.service.CommentLikedService;
+import vn.iostar.springbootbackend.service.SongLikedService;
 
 @RestController
 @RequestMapping("/api/v1")

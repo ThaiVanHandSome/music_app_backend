@@ -1,8 +1,9 @@
-package vn.iostar.springbootbackend.auth.registration.token;
+package vn.iostar.springbootbackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import vn.iostar.springbootbackend.entity.ConfirmationToken;
 import vn.iostar.springbootbackend.entity.User;
 
 import javax.transaction.Transactional;

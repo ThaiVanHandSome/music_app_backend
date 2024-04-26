@@ -8,8 +8,8 @@ import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.impl.AlbumService;
-import vn.iostar.springbootbackend.service.impl.SongService;
+import vn.iostar.springbootbackend.service.AlbumService;
+import vn.iostar.springbootbackend.service.SongService;
 
 import java.util.List;
 import java.util.Optional;
