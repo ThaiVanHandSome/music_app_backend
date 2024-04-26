@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import vn.iostar.springbootbackend.embededId.ArtistSongId;
-import vn.iostar.springbootbackend.entity.Artist;
 import vn.iostar.springbootbackend.entity.ArtistSong;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
 
 import java.util.List;
 
@@ -17,6 +17,6 @@ public interface ArtistSongRepository extends JpaRepository<ArtistSong, ArtistSo
     List<Song> findAllSongsByArtistId(Long id_artist);
 
     @Query("SELECT a.artist FROM ArtistSong a WHERE a.artistSongId.idSong = ?1")
-    List<Artist> findArtistBySongId(Long id_song);
+    List<User> findArtistBySongId(Long id_song);
 
 }

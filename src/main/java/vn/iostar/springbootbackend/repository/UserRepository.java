@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import vn.iostar.springbootbackend.entity.User;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>{
@@ -18,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("UPDATE User a " +
             "SET a.isActive = TRUE WHERE a.email = ?1")
     int enableUser(String email);
+
+    List<User> findByNicknameContaining(String name);
 }

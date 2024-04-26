@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import vn.iostar.springbootbackend.entity.Artist;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ArtistSongService;
@@ -64,7 +64,7 @@ public class SongController {
 
     @GetMapping("/song/{songId}/artists")
     public ResponseEntity<?> getArtistBySongId(@PathVariable Long songId) {
-        List<Artist> artists = artistSongService.findArtistBySongId(songId);
+        List<User> artists = artistSongService.findArtistBySongId(songId);
         Response res = new Response(true, false, "Get Artists Successfully!", artists);
         return ResponseEntity.ok(res);
     }
