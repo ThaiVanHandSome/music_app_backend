@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
-    @Query("select a from Album a where a.artist.idArtist = :idArtist")
+    @Query("select a from Album a where a.user.idUser = :idArtist")
     List<Album> getAlbumByIdArtist(@Param("idArtist") Long idArtist);
 
     List<Album> findByNameContaining(String name);

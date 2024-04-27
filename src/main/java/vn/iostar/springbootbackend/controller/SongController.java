@@ -1,12 +1,16 @@
 package vn.iostar.springbootbackend.controller;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import vn.iostar.springbootbackend.entity.Artist;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ArtistSongService;
@@ -14,6 +18,7 @@ import vn.iostar.springbootbackend.service.SongService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -64,8 +69,32 @@ public class SongController {
 
     @GetMapping("/song/{songId}/artists")
     public ResponseEntity<?> getArtistBySongId(@PathVariable Long songId) {
-        List<Artist> artists = artistSongService.findArtistBySongId(songId);
+        List<User> artists = artistSongService.findArtistBySongId(songId);
         Response res = new Response(true, false, "Get Artists Successfully!", artists);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/song/most-views")
+    public ResponseEntity<?> getSongsByMostViews(Pageable pageable) {
+        Page<Song> songs = songService.getSongsByMostViews(pageable);
+        System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
+        Response res = new Response(true, false, "Get Songs By Most Views Successfully!", songs);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/song/most-likes")
+    public ResponseEntity<?> getSongsByMostLikes(Pageable pageable) {
+        Page<Song> songs = songService.getSongsByMostLikes(pageable);
+        System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
+        Response res = new Response(true, false, "Get Songs By Most Likes Successfully!", songs);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/song/new-released")
+    public ResponseEntity<?> getSongsByDayCreated(Pageable pageable) {
+        Page<Song> songs = songService.getSongsByDayCreated(pageable);
+        System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
+        Response res = new Response(true, false, "Get Songs By Day Created Successfully!", songs);
         return ResponseEntity.ok(res);
     }
 }

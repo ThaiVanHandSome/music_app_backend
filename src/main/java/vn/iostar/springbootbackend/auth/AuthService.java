@@ -113,6 +113,7 @@ public class AuthService {
             return AuthenticationResponse.builder()
                     .error(true)
                     .success(false)
+                    .email(user.getEmail())
                     .type("confirm")
                     .message("Account Not Confirm!")
                     .build();
@@ -154,7 +155,9 @@ public class AuthService {
                         .build();
             }
             confirmationTokenService.setConfirmedAt(token);
-            userService.enableUser(confirmationToken.getUser().getEmail());
+            if(type.equals("confirm")) {
+                userService.enableUser(confirmationToken.getUser().getEmail());
+            }
             return OtpResponse.builder().message("Successfully! Confirmed!").type(type).error(false).success(true).build();
         }
         return OtpResponse.builder().message("Token Not Valid!").error(true).success(false).build();
