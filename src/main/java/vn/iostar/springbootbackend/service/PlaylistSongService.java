@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.entity.PlaylistSong;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.PlaylistSongRepository;
 
 import java.util.List;
@@ -12,14 +13,17 @@ import java.util.List;
 public class PlaylistSongService {
 
     private final PlaylistSongRepository playlistSongRepository;
+    private final SongService songService;
 
     @Autowired
-    public PlaylistSongService(PlaylistSongRepository playlistSongRepository) {
+    public PlaylistSongService(PlaylistSongRepository playlistSongRepository, SongService songService) {
         this.playlistSongRepository = playlistSongRepository;
+        this.songService = songService;
     }
 
-    public List<Song> findAllByPlaylistSongId(Long id_playlist) {
-        return playlistSongRepository.findAllByPlaylistSongId(id_playlist);
+    public List<SongModel> findAllByPlaylistSongId(Long id_playlist) {
+        List<Song> songs = playlistSongRepository.findAllByPlaylistSongId(id_playlist);
+        return songService.convertToSongModel(songs);
     }
 
     public int deleteByPlaylistSongId(Long id_playlist, Long id_song) {

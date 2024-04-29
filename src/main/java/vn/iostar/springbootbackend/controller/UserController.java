@@ -1,12 +1,11 @@
 package vn.iostar.springbootbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.iostar.springbootbackend.entity.Playlist;
-import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.PlaylistModel;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.PlaylistService;
 import vn.iostar.springbootbackend.service.SongLikedService;
@@ -49,15 +48,21 @@ public class UserController {
   
     @GetMapping("{id_user}/playlists")
     public ResponseEntity<?> getPlaylistsByIdUser(@PathVariable("id_user") Long idUser) {
-        List<Playlist> playlists = playlistService.getPlaylistsByIdUser(idUser);
+        List<PlaylistModel> playlists = playlistService.getPlaylistsByIdUser(idUser);
         Response response = new Response(true, false, "Get Playlists Success!", playlists);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id_user}/liked-songs")
     public ResponseEntity<?> getLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
-        List<Song> songs = songLikedService.getLikedSongsByIdUser(idUser);
+        List<SongModel> songs = songLikedService.getLikedSongsByIdUser(idUser);
         Response response = new Response(true, false, "Get Liked Songs Success!", songs);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("{id_user}/not-liked-songs")
+    public ResponseEntity<?> getNotLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
+        List<SongModel> songs = songLikedService.getNotLikedSongsByIdUser(idUser);
+        Response response = new Response(true, false, "Get Not Liked Songs Success!", songs);
         return ResponseEntity.ok(response);
     }
 }

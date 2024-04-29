@@ -30,4 +30,7 @@ public interface SongLikedRepository extends JpaRepository<SongLiked, Long> {
     @Modifying
     @Query("DELETE FROM SongLiked s WHERE s.songLikedId = ?1")
     void deleteBySongLikedId(SongLikedId songLikedId);
+    @Query("SELECT s FROM Song s WHERE s.idSong NOT IN (SELECT s.songLikedId.idSong FROM SongLiked s WHERE s.songLikedId.idUser = ?1)")
+
+    List<Song> getNotLikedSongsByIdUser(Long idUser);
 }
