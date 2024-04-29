@@ -1,5 +1,7 @@
 package vn.iostar.springbootbackend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
@@ -45,6 +47,12 @@ public class SongService {
         return  songRepository.findById(id);
     }
 
+    public Page<Song> getSongsByMostViews(Pageable pageable) { return songRepository.findByOrderByViewsDesc(pageable); };
+
+    public Page<Song> getSongsByMostLikes(Pageable pageable) { return songRepository.findSongsByMostLikes(pageable); };
+
+    public Page<Song> getSongsByDayCreated(Pageable pageable) { return songRepository.findByOrderByDayCreatedDesc(pageable); };
+
     public List<SongModel> convertToSongModel(List<Song> songs) {
         List<SongModel> songModels = new ArrayList<>();
         for (Song song : songs) {
@@ -55,8 +63,8 @@ public class SongService {
             songModel.setDayCreated(song.getDayCreated());
             songModel.setResource(song.getResource());
             songModel.setImage(song.getImage());
-            songModel.setArtistId(song.getArtistSongs().get(0).getArtistSongId().getIdArtist());
-            songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getName());
+            songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getFirstName()
+                    + " " + song.getArtistSongs().get(0).getArtist().getLastName());
             songModels.add(songModel);
         }
         return songModels;

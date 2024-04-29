@@ -26,6 +26,9 @@ public class User implements UserDetails {
     @Column(name = "id_user")
     private Long idUser;
 
+    @Column(name = "nickname", nullable = true, columnDefinition = "nvarchar(1000)")
+    private String nickname;
+
     @Column(name = "first_name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String firstName;
 
@@ -47,6 +50,9 @@ public class User implements UserDetails {
     @Column(name = "avatar", columnDefinition = "varchar(1000)")
     private String avatar;
 
+    @Column(name = "introduction", nullable = true, columnDefinition = "nvarchar(10000)")
+    private String introduction;
+
     @Column(name = "is_active")
     private boolean isActive;
 
@@ -63,10 +69,19 @@ public class User implements UserDetails {
     private List<SongLiked> songLikeds;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<FollowArtist> followArtists;
+    private List<FollowArtist> followedArtists;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ConfirmationToken> confirmationTokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Album> albums;
+
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    private List<ArtistSong> artistSongs;
+
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    private List<FollowArtist> followArtists;
 
     @Enumerated(EnumType.STRING)
     private Role role;

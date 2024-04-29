@@ -23,8 +23,8 @@ public class ArtistSong implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JoinColumn(name = "id_artist", referencedColumnName = "id_artist", insertable = false, updatable = false)
-    private Artist artist;
+    @JoinColumn(name = "id_artist", referencedColumnName = "id_user", insertable = false, updatable = false)
+    private User artist;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference

@@ -55,8 +55,8 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User findByIdUser(Long id_user) {
-        return userRepository.findByIdUser(id_user).get();
+    public Optional<User> findByIdUser(Long idUser) {
+        return userRepository.findByIdUser(idUser);
     }
 
     public List<User> findAll() {
@@ -95,5 +95,13 @@ public class UserService implements UserDetailsService {
             return RegisterResponse.builder().message("Change Password Successfully!").error(false).success(true).build();
         }
         return RegisterResponse.builder().message("User Not Valid!").error(true).success(false).build();
+    }
+
+    public List<User> getArtistByKeyword(String keyword) {
+        return userRepository.findByNicknameContaining(keyword);
+    }
+
+    public void deleteArtist(User artist) {
+        userRepository.delete(artist);
     }
 }

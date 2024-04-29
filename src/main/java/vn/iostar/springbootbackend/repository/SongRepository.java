@@ -1,5 +1,7 @@
 package vn.iostar.springbootbackend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,13 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     List<Song> findByNameContaining(String keyword);
 
     Optional<Song> findById(Long id);
+
+    Page<Song> findByOrderByViewsDesc(Pageable pageable);
+
+    @Query("SELECT s FROM Song s LEFT JOIN SongLiked sl ON s.idSong = sl.song.idSong GROUP BY s.idSong ORDER BY COUNT(sl.song.idSong) DESC")
+    Page<Song> findSongsByMostLikes(Pageable pageable);
+
+    Page<Song> findByOrderByDayCreatedDesc(Pageable pageable);
 
     @Transactional
     @Modifying
