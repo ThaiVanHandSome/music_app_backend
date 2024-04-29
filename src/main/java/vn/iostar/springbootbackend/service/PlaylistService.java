@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.PlaylistSongId;
 import vn.iostar.springbootbackend.entity.Playlist;
 import vn.iostar.springbootbackend.entity.PlaylistSong;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.PlaylistRequest;
@@ -19,6 +20,8 @@ import java.util.Optional;
 
 @Service
 public class PlaylistService {
+    private final String DEFAULT_IMAGE = "https://res.cloudinary.com/dxaobwm8l/image/upload/v1710831081/images/placeholder.jpg";
+
     @Autowired
     private PlaylistRepository playlistRepository;
 
@@ -53,7 +56,7 @@ public class PlaylistService {
         Playlist savedPlaylist = new Playlist();
         savedPlaylist.setUser(user);
         savedPlaylist.setName(requestBody.getName());
-        savedPlaylist.setImage(requestBody.getImage());
+        savedPlaylist.setImage(DEFAULT_IMAGE);
         savedPlaylist.setDayCreated(LocalDateTime.now());
         savedPlaylist.setPlaylistSongs(null);
         playlistRepository.save(savedPlaylist);
@@ -70,6 +73,7 @@ public class PlaylistService {
             }
             savedPlaylist.setPlaylistSongs(playlistSongs);
         }
+        setPlaylistImageByFirstSongImage(savedPlaylist.getIdPlaylist());
         return convertToPlaylistModel(savedPlaylist);
 
     }
@@ -94,5 +98,19 @@ public class PlaylistService {
                 playlistSongRepository.findAllByPlaylistSongId(playlist.getIdPlaylist()))
         );
         return playlistModel;
+    }
+
+    public void setPlaylistImageByFirstSongImage(Long idPlaylist) {
+        Playlist playlist = playlistRepository.findById(idPlaylist).orElseThrow(
+                () -> new RuntimeException("Playlist not found")
+        );
+        if (playlist.getPlaylistSongs().isEmpty()) {
+            playlist.setImage(DEFAULT_IMAGE);
+        } else {
+            Long idSong = playlist.getPlaylistSongs().get(0).getPlaylistSongId().getIdSong();
+            Song song = songService.getSongById(idSong).get();
+            playlist.setImage(song.getImage());
+        }
+        playlistRepository.save(playlist);
     }
 }

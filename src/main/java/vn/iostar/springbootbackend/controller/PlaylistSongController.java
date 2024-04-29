@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.embededId.PlaylistSongId;
 import vn.iostar.springbootbackend.entity.PlaylistSong;
-import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.PlaylistSongService;
 
@@ -20,7 +20,7 @@ public class PlaylistSongController {
 
     @GetMapping("/{id_playlist}/songs")
     public ResponseEntity<?> findAllSongByPlaylistId(@PathVariable Long id_playlist) {
-        List<Song> songs = playlistSongService.findAllByPlaylistSongId(id_playlist);
+        List<SongModel> songs = playlistSongService.findAllByPlaylistSongId(id_playlist);
         Response res = new Response(true, false, "Get Songs Of Playlist Successfully!", songs);
         return ResponseEntity.ok(res);
     }

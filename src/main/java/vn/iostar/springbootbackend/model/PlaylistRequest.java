@@ -14,6 +14,5 @@ import java.util.List;
 public class PlaylistRequest {
     private Long idUser;
     private String name;
-    private String image;
     private List<Long> songIds;
 }

@@ -31,4 +31,13 @@ public class PlaylistController {
         Response response = new Response(true, false,"Playlist deleted", null);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/playlist/{id_playlist}")
+    public ResponseEntity<?> getPlaylistById(@PathVariable Long id_playlist) {
+        Playlist playlist = playlistService.getPlaylistById(id_playlist).orElseThrow();
+        playlistService.setPlaylistImageByFirstSongImage(id_playlist);
+        PlaylistModel playlistModel = playlistService.convertToPlaylistModel(playlist);
+        return ResponseEntity.ok(playlistModel);
+    }
+
 }

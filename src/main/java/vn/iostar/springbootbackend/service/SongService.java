@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 public class SongService {
-    private SongRepository songRepository;
+    private final SongRepository songRepository;
 
     public SongService(SongRepository songRepository) {
         this.songRepository = songRepository;
@@ -63,8 +63,8 @@ public class SongService {
             songModel.setDayCreated(song.getDayCreated());
             songModel.setResource(song.getResource());
             songModel.setImage(song.getImage());
-            songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getFirstName()
-                    + " " + song.getArtistSongs().get(0).getArtist().getLastName());
+            songModel.setArtistId(song.getArtistSongs().get(0).getArtist().getIdUser());
+            songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getNickname());
             songModels.add(songModel);
         }
         return songModels;
