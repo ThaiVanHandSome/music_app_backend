@@ -3,9 +3,10 @@ package vn.iostar.springbootbackend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.PlaylistSongId;
-import vn.iostar.springbootbackend.entity.*;
 import vn.iostar.springbootbackend.entity.Playlist;
+import vn.iostar.springbootbackend.entity.PlaylistSong;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.PlaylistRequest;
 import vn.iostar.springbootbackend.repository.PlaylistRepository;
 import vn.iostar.springbootbackend.repository.PlaylistSongRepository;
@@ -27,16 +28,22 @@ public class PlaylistService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SongService songService;
 
     public List<Playlist> getPlaylistByUser(User user) {
         return playlistRepository.findByUser(user);
     }
 
-    public List<Playlist> getPlaylistsByIdUser(Long idUser) {
-        return playlistRepository.getPlaylistsByIdUser(idUser);
+    public List<PlaylistModel> getPlaylistsByIdUser(Long idUser) {
+        List<PlaylistModel> models = new ArrayList<>();
+        for (Playlist playlist: playlistRepository.getPlaylistsByIdUser(idUser)) {
+            models.add(convertToPlaylistModel(playlist));
+        }
+        return models;
     }
 
-    public Playlist createPlaylist(PlaylistRequest requestBody) {
+    public PlaylistModel createPlaylist(PlaylistRequest requestBody) {
         // Check user exists
         User user = userRepository.findById(requestBody.getIdUser()).orElseThrow(
                 () -> new RuntimeException("User not found")
@@ -63,7 +70,8 @@ public class PlaylistService {
             }
             savedPlaylist.setPlaylistSongs(playlistSongs);
         }
-        return playlistRepository.save(savedPlaylist);
+        return convertToPlaylistModel(savedPlaylist);
+
     }
 
     public Optional<Playlist> getPlaylistById(Long idPlaylist) {
@@ -73,5 +81,18 @@ public class PlaylistService {
     public void deletePlaylist(Playlist playlist) {
         //playlist.getPlaylistSongs().clear();
         playlistRepository.delete(playlist);
+    }
+
+    public PlaylistModel convertToPlaylistModel(Playlist playlist) {
+        PlaylistModel playlistModel = new PlaylistModel();
+        playlistModel.setIdPlaylist(playlist.getIdPlaylist());
+        playlistModel.setIdUser(playlist.getUser().getIdUser());
+        playlistModel.setName(playlist.getName());
+        playlistModel.setDayCreated(playlist.getDayCreated());
+        playlistModel.setImage(playlist.getImage());
+        playlistModel.setSongs(songService.convertToSongModel(
+                playlistSongRepository.findAllByPlaylistSongId(playlist.getIdPlaylist()))
+        );
+        return playlistModel;
     }
 }

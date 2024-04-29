@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.SongLikedId;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.SongLiked;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongLikedRepository;
 
 import javax.transaction.Transactional;
@@ -15,7 +16,11 @@ import java.util.List;
 @Service
 public class SongLikedService {
 
-    private final SongLikedRepository songLikedRepository;
+    @Autowired
+    private SongLikedRepository songLikedRepository;
+
+    @Autowired
+    private SongService songService;
 
     @Autowired
     public SongLikedService(SongLikedRepository songLikedRepository) {
@@ -66,7 +71,13 @@ public class SongLikedService {
         }
     }
 
-    public List<Song> getLikedSongsByIdUser(Long idUser) {
-        return songLikedRepository.getLikedSongsByIdUser(idUser);
+    public List<SongModel> getLikedSongsByIdUser(Long idUser) {
+        List<Song> songs = songLikedRepository.getLikedSongsByIdUser(idUser);
+        return songService.convertToSongModel(songs);
+    }
+
+    public List<SongModel> getNotLikedSongsByIdUser(Long idUser) {
+        List<Song> songs = songLikedRepository.getNotLikedSongsByIdUser(idUser);
+        return songService.convertToSongModel(songs);
     }
 }

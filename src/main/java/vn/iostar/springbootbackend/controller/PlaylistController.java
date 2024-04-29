@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.entity.Playlist;
+import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.PlaylistRequest;
 import vn.iostar.springbootbackend.response.Response;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class PlaylistController {
 
     @PostMapping("/playlist")
     public ResponseEntity<?> createPlaylist(@RequestBody PlaylistRequest requestBody) {
-        Playlist playlist = playlistService.createPlaylist(requestBody);
+        PlaylistModel playlist = playlistService.createPlaylist(requestBody);
         return ResponseEntity.ok(playlist);
     }
 
