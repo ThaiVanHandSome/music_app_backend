@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Album;
-import vn.iostar.springbootbackend.entity.Artist;
+import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
-import vn.iostar.springbootbackend.service.ArtistService;
+import vn.iostar.springbootbackend.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
