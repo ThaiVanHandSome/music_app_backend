@@ -36,6 +36,6 @@ public class Album implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JoinColumn(name = "id_artist", referencedColumnName = "id_artist")
-    private Artist artist;
+    @JoinColumn(name = "id_artist", referencedColumnName = "id_user")
+    private User user;
 }
