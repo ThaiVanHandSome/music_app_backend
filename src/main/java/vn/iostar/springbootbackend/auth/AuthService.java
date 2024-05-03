@@ -68,27 +68,25 @@ public class AuthService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .phoneNumber(request.getPhoneNumber())
-                    .role(request.getRole())
+                    .role(Role.USER)
                     .isActive(false)
                     .build();
             repository.save(user);
 
-            if(request.getRole() != null) {
-                String token = generateOTP();
-                ConfirmationToken confirmationToken = new ConfirmationToken(
-                        token,
-                        LocalDateTime.now(),
-                        LocalDateTime.now().plusMinutes(15),
-                        user
+            String token = generateOTP();
+            ConfirmationToken confirmationToken = new ConfirmationToken(
+                    token,
+                    LocalDateTime.now(),
+                    LocalDateTime.now().plusMinutes(15),
+                    user
 
-                );
-                confirmationTokenService.saveConfirmationToken(confirmationToken);
-                emailService.send(request.getEmail(), buildEmailOTP(request.getFirstName() + " " + request.getLastName(), token));
-            }
+            );
+            confirmationTokenService.saveConfirmationToken(confirmationToken);
+            emailService.send(request.getEmail(), buildEmailOTP(request.getFirstName() + " " + request.getLastName(), token));
             String message = "Register Successfully! Please Check Email To See OTP!";
-            if(request.getRole() == null) {
-                message = "Register Successfully! Please Wait Admin Confirm. After Confirmed, Notification Will Be Sended To Your Email";
-            }
+//            if(request.getRole() == null) {
+//                message = "Register Successfully! Please Wait Admin Confirm. After Confirmed, Notification Will Be Sended To Your Email";
+//            }
             return RegisterResponse.builder()
                     .message(message)
                     .error(false)
@@ -125,6 +123,9 @@ public class AuthService {
                     .message("Account Not Confirm!")
                     .build();
         }
+        if(user.getRole() != request.getRole()) {
+            return AuthenticationResponse.builder().error(true).success(false).message("You Do Not Have Authorize").build();
+        };
         var jwtToken = jwtService.generateAccessToken(user);
         var jwtRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
         return AuthenticationResponse.builder()

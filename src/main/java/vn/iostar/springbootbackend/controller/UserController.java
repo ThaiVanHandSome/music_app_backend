@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -25,41 +25,61 @@ public class UserController {
 
     @Autowired
     private SongLikedService songLikedService;
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get All Users Successfully!");
+        res.setData(userService.findAll());
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/user/{idUser}")
+    public ResponseEntity<?> getUserById(@PathVariable("idUser") Long idUser) {
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get All Users Successfully!");
+        res.setData(userService.findByIdUser(idUser));
+        return ResponseEntity.ok(res);
+    }
   
-    @PatchMapping("/{idUser}")
+    @PatchMapping("/user/{idUser}")
     public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, Object> fields) {
         User user = userService.updateUserByFields(idUser, fields);
         Response response = new Response(true, false, "Update Success!", user);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{idUser}/change-password")
+    @PatchMapping("/user/{idUser}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable("idUser") Long idUser, @RequestBody Map<String, String> reqBody) {
         String password = reqBody.get("password");
         return ResponseEntity.ok(userService.changePassword(idUser, password));
     }
 
-    @PatchMapping("/forgot-password")
+    @PatchMapping("/user/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> reqBody) {
         String password = reqBody.get("password");
         String email = reqBody.get("email");
         return ResponseEntity.ok(userService.changePasswordForgot(email, password));
     }
   
-    @GetMapping("{id_user}/playlists")
+    @GetMapping("/user/{id_user}/playlists")
     public ResponseEntity<?> getPlaylistsByIdUser(@PathVariable("id_user") Long idUser) {
         List<PlaylistModel> playlists = playlistService.getPlaylistsByIdUser(idUser);
         Response response = new Response(true, false, "Get Playlists Success!", playlists);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("{id_user}/liked-songs")
+    @GetMapping("/user/{id_user}/liked-songs")
     public ResponseEntity<?> getLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
         List<SongModel> songs = songLikedService.getLikedSongsByIdUser(idUser);
         Response response = new Response(true, false, "Get Liked Songs Success!", songs);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("{id_user}/not-liked-songs")
+    @GetMapping("/user/{id_user}/not-liked-songs")
     public ResponseEntity<?> getNotLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
         List<SongModel> songs = songLikedService.getNotLikedSongsByIdUser(idUser);
         Response response = new Response(true, false, "Get Not Liked Songs Success!", songs);
