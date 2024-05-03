@@ -62,28 +62,35 @@ public class AuthService {
         Optional<User> optUser = repository.findByEmail(request.getEmail());
         if(optUser.isEmpty()) {
             var user = User.builder()
+                    .nickname(request.getNickName())
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .phoneNumber(request.getPhoneNumber())
-                    .role(Role.USER)
+                    .role(request.getRole())
                     .isActive(false)
                     .build();
             repository.save(user);
 
-            String token = generateOTP();
-            ConfirmationToken confirmationToken = new ConfirmationToken(
-                    token,
-                    LocalDateTime.now(),
-                    LocalDateTime.now().plusMinutes(15),
-                    user
+            if(request.getRole() != null) {
+                String token = generateOTP();
+                ConfirmationToken confirmationToken = new ConfirmationToken(
+                        token,
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusMinutes(15),
+                        user
 
-            );
-            confirmationTokenService.saveConfirmationToken(confirmationToken);
-            emailService.send(request.getEmail(), buildEmailOTP(request.getFirstName() + " " + request.getLastName(), token));
+                );
+                confirmationTokenService.saveConfirmationToken(confirmationToken);
+                emailService.send(request.getEmail(), buildEmailOTP(request.getFirstName() + " " + request.getLastName(), token));
+            }
+            String message = "Register Successfully! Please Check Email To See OTP!";
+            if(request.getRole() == null) {
+                message = "Register Successfully! Please Wait Admin Confirm. After Confirmed, Notification Will Be Sended To Your Email";
+            }
             return RegisterResponse.builder()
-                    .message("Register Successfully! Please Check Email To See OTP!")
+                    .message(message)
                     .error(false)
                     .success(true)
                     .build();
