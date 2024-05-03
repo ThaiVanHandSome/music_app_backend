@@ -3,6 +3,7 @@ package vn.iostar.springbootbackend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.iostar.springbootbackend.model.SongLikedRequest;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.SongLikedService;
 
@@ -31,6 +32,13 @@ public class SongLikedController {
     public ResponseEntity<?> toggleLike(@RequestParam("songId") Long songId, @RequestParam("userId") Long userId) {
         boolean isLiked = songLikedService.toggleLike(songId, userId);
         Response res = new Response(true, false, "Successfully!", isLiked);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/songs")
+    public ResponseEntity<?> addSongsToFavourite(@RequestBody SongLikedRequest requestBody) {
+        songLikedService.addSongToFavourite(requestBody);
+        Response res = new Response(true, false, "Successfully!", null);
         return ResponseEntity.ok(res);
     }
 

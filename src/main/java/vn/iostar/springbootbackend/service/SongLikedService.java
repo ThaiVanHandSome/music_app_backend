@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.embededId.SongLikedId;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.SongLiked;
+import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.SongLikedRequest;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongLikedRepository;
+import vn.iostar.springbootbackend.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -21,6 +24,9 @@ public class SongLikedService {
 
     @Autowired
     private SongService songService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public SongLikedService(SongLikedRepository songLikedRepository) {
@@ -79,5 +85,18 @@ public class SongLikedService {
     public List<SongModel> getNotLikedSongsByIdUser(Long idUser) {
         List<Song> songs = songLikedRepository.getNotLikedSongsByIdUser(idUser);
         return songService.convertToSongModel(songs);
+    }
+
+    public void addSongToFavourite(SongLikedRequest requestBody) {
+        // Check user exists
+        User user = userRepository.findById(requestBody.getIdUser()).orElseThrow(
+                () -> new RuntimeException("User not found")
+        );
+        for (Long idSong: requestBody.getSongIds()) {
+                SongLiked songLiked = new SongLiked();
+                songLiked.setSongLikedId(new SongLikedId(user.getIdUser(), idSong));
+                songLiked.setDayLiked(LocalDateTime.now());
+                songLikedRepository.save(songLiked);
+        }
     }
 }

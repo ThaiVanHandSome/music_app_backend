@@ -20,8 +20,9 @@ public class SongService {
         this.songRepository = songRepository;
     }
 
-    public List<Song> getAllSongs() {
-        return songRepository.findAll();
+    public List<SongModel> getAllSongs() {
+        List<Song> songs = songRepository.findAll();
+        return convertToSongModel(songs);
     }
     public Optional<Song> getSongById(Long id) {
         return songRepository.findById(id);
