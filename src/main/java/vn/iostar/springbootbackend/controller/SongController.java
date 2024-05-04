@@ -1,16 +1,15 @@
 package vn.iostar.springbootbackend.controller;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ArtistSongService;
@@ -18,7 +17,6 @@ import vn.iostar.springbootbackend.service.SongService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -34,8 +32,8 @@ public class SongController {
 
     @GetMapping("/songs")
     public ResponseEntity<?> getAllSongs() {
-        List<Song> songs = songService.getAllSongs();
-        Response res = new Response(true, false, "Get Songs Successfully!", songs);
+        List<SongModel> songModelss = songService.getAllSongs();
+        Response res = new Response(true, false, "Get Songs Successfully!", songModelss);
         return ResponseEntity.ok(res);
     }
 

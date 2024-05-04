@@ -21,7 +21,8 @@ public class PlaylistController {
     @PostMapping("/playlist")
     public ResponseEntity<?> createPlaylist(@RequestBody PlaylistRequest requestBody) {
         PlaylistModel playlist = playlistService.createPlaylist(requestBody);
-        return ResponseEntity.ok(playlist);
+        Response response = new Response(true, false,"Playlist deleted", playlist);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/playlist/{id_playlist}")
@@ -37,7 +38,8 @@ public class PlaylistController {
         Playlist playlist = playlistService.getPlaylistById(id_playlist).orElseThrow();
         playlistService.setPlaylistImageByFirstSongImage(id_playlist);
         PlaylistModel playlistModel = playlistService.convertToPlaylistModel(playlist);
-        return ResponseEntity.ok(playlistModel);
+        Response response = new Response(true, false,"Playlist found", playlistModel);
+        return ResponseEntity.ok(response);
     }
 
 }
