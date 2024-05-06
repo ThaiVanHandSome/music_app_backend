@@ -1,20 +1,28 @@
 package vn.iostar.springbootbackend.controller;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
+import vn.iostar.springbootbackend.model.SongUpload;
+import vn.iostar.springbootbackend.repository.SongRepository;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ArtistSongService;
+import vn.iostar.springbootbackend.service.ImageService;
 import vn.iostar.springbootbackend.service.SongService;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +36,12 @@ public class SongController {
     private AlbumService albumService;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     private ArtistSongService artistSongService;
+    @Autowired
+    private SongRepository songRepository;
 
     @GetMapping("/songs")
     public ResponseEntity<?> getAllSongs() {
@@ -101,5 +114,26 @@ public class SongController {
         System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
         Response res = new Response(true, false, "Get Songs By Day Created Successfully!", songs);
         return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/song/upload")
+    public ResponseEntity<?> uploadSong(@RequestPart("imageFile") MultipartFile imageFile,
+                                        @RequestPart("name") String name,
+                                        @RequestPart("resourceFile") MultipartFile resourceFile) throws IOException {
+        System.out.println(imageFile.getSize() + " " + imageFile.getOriginalFilename());
+        System.out.println(resourceFile.getSize() + " " + resourceFile.getOriginalFilename());
+        String image = imageService.uploadImage(imageFile);
+        String resource = songService.uploadAudio(resourceFile);
+        Song song = new Song();
+        song.setName(name);
+        song.setImage(image);
+        song.setResource(resource);
+        song.setDayCreated(LocalDateTime.now());
+        songRepository.save(song);
+        ResponseMessage responseMessage = new ResponseMessage();
+        responseMessage.setError(false);
+        responseMessage.setSuccess(true);
+        responseMessage.setMessage("Uploaded Successfully!");
+        return ResponseEntity.ok(responseMessage);
     }
 }

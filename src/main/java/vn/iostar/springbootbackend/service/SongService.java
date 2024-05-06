@@ -1,19 +1,29 @@
 package vn.iostar.springbootbackend.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class SongService {
+
+    @Autowired
+    private Cloudinary cloudinary;
+
     private final SongRepository songRepository;
 
     public SongService(SongRepository songRepository) {
@@ -73,5 +83,10 @@ public class SongService {
 
     public long countSongs() {
         return songRepository.count();
+    }
+
+    public String uploadAudio(MultipartFile audioFile) throws IOException {
+        Map<?, ?> result = cloudinary.uploader().upload(audioFile.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+        return (String) result.get("url");
     }
 }
