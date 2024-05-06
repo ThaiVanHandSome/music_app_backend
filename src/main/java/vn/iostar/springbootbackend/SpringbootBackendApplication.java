@@ -43,7 +43,7 @@ public class SpringbootBackendApplication {
 				registry
 						.addMapping("/**")
 						.allowedOrigins("http://localhost:3000", "http://10.0.2.2:8989", "http://10.103.120.42:8989")
-						.allowedMethods("GET", "POST", "PUT", "DELETE")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
 						.allowCredentials(true);;
 			}
 		};

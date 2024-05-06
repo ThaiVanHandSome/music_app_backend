@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class EmailService implements EmailSender{
 
-    private final  static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     @Autowired
     private JavaMailSender mailSender;
@@ -28,7 +28,7 @@ public class EmailService implements EmailSender{
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("[CisnW] Please Confirm Your Email");
+            helper.setSubject("[CisnW] Notification");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             LOGGER.error("Failed to send email!", e);

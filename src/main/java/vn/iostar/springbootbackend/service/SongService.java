@@ -70,4 +70,8 @@ public class SongService {
         }
         return songModels;
     }
+
+    public long countSongs() {
+        return songRepository.count();
+    }
 }

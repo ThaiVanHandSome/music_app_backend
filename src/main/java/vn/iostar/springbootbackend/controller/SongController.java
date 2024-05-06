@@ -37,6 +37,13 @@ public class SongController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/songs/count")
+    public ResponseEntity<?> getSongsCount() {
+        long cnt = songService.countSongs();
+        Response res = new Response(true, false, "Get Songs Successfully!", cnt);
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/song/{id}")
     public ResponseEntity<?> getSongById(@PathVariable("id") Long id) {
         Optional<Song> optSong = songService.getSongById(id);

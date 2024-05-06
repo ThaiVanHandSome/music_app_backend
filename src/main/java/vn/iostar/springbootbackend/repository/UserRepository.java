@@ -3,6 +3,7 @@ package vn.iostar.springbootbackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 
 import javax.transaction.Transactional;
@@ -21,4 +22,13 @@ public interface UserRepository extends JpaRepository<User, Long>{
     int enableUser(String email);
 
     List<User> findByNicknameContaining(String name);
+
+    @Query("SELECT u FROM User u WHERE u.role IN :roles")
+    List<User> findByRoles(List<Role> roles);
+
+    @Override
+    long count();
+
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role = 'ARTIST'")
+    long countArtists();
 }

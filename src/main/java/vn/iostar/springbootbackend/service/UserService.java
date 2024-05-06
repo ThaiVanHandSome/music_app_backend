@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
+import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.UserRepository;
 
@@ -42,15 +43,28 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUserByFields(Long id_user, Map<String, Object> fields) {
-        Optional<User> userEntity = userRepository.findByIdUser(id_user);
-        if (userEntity.isPresent()) {
+        Optional<User> userEntityOptional = userRepository.findByIdUser(id_user);
+
+        if (userEntityOptional.isPresent()) {
+            User userEntity = userEntityOptional.get();
+
             fields.forEach((key, value) -> {
                 Field field = ReflectionUtils.findField(User.class, key);
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, userEntity.get(), value);
+                if (field != null) {
+                    field.setAccessible(true);
+                    if (field.getType().equals(Role.class)) {
+                        // Handle setting the role field
+                        Role roleValue = Role.valueOf((String) value);
+                        ReflectionUtils.setField(field, userEntity, roleValue);
+                    } else {
+                        // For other fields, directly set the value
+                        ReflectionUtils.setField(field, userEntity, value);
+                    }
+                }
             });
-            userRepository.save(userEntity.get());
-            return userEntity.get();
+
+            userRepository.save(userEntity);
+            return userEntity;
         }
         return null;
     }
@@ -103,5 +117,17 @@ public class UserService implements UserDetailsService {
 
     public void deleteArtist(User artist) {
         userRepository.delete(artist);
+    }
+
+    public List<User> findByRoles(List<Role> roles) {
+        return userRepository.findByRoles(roles);
+    }
+
+    public long countUsers() {
+        return userRepository.count();
+    }
+
+    public long countArtists() {
+        return userRepository.countArtists();
     }
 }

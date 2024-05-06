@@ -3,6 +3,7 @@ package vn.iostar.springbootbackend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.SongModel;
@@ -11,6 +12,7 @@ import vn.iostar.springbootbackend.service.PlaylistService;
 import vn.iostar.springbootbackend.service.SongLikedService;
 import vn.iostar.springbootbackend.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,39 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/users/count")
+    public ResponseEntity<?> getUserCount() {
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get User Count Successfully!");
+        res.setData(userService.countUsers());
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/users/artists/count")
+    public ResponseEntity<?> getArtistsCount() {
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get User Count Successfully!");
+        res.setData(userService.countArtists());
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/admin/users")
+    public ResponseEntity<?> getAllUsersNotAdmin() {
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get All Users Successfully!");
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ARTIST);
+        roles.add(Role.USER);
+        res.setData(userService.findByRoles(roles));
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/user/{idUser}")
     public ResponseEntity<?> getUserById(@PathVariable("idUser") Long idUser) {
         Response res = new Response();
@@ -43,6 +78,16 @@ public class UserController {
         res.setSuccess(true);
         res.setMessage("Get All Users Successfully!");
         res.setData(userService.findByIdUser(idUser));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserByEmail(@RequestParam("email") String email) {
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get User Successfully!");
+        res.setData(userService.getUserByEmail(email));
         return ResponseEntity.ok(res);
     }
   
