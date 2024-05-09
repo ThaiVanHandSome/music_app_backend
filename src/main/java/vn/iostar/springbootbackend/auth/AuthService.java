@@ -2,6 +2,7 @@ package vn.iostar.springbootbackend.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,12 +16,9 @@ import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenResponse;
 import vn.iostar.springbootbackend.auth.email.EmailValidator;
 import vn.iostar.springbootbackend.auth.registration.RegisterRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
-import vn.iostar.springbootbackend.entity.ConfirmationToken;
+import vn.iostar.springbootbackend.entity.*;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.service.ConfirmationTokenService;
-import vn.iostar.springbootbackend.entity.RefreshToken;
-import vn.iostar.springbootbackend.entity.Role;
-import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.UserRepository;
 import vn.iostar.springbootbackend.security.jwt.JWTService;
 import vn.iostar.springbootbackend.service.RefreshTokenService;
@@ -69,6 +67,7 @@ public class AuthService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .phoneNumber(request.getPhoneNumber())
                     .role(Role.USER)
+                    .provider(Provider.DATABASE)
                     .isActive(false)
                     .build();
             repository.save(user);
@@ -263,6 +262,37 @@ public class AuthService {
                 .message("Email Not Register! Please Enter Another Email!")
                 .error(true)
                 .success(false)
+                .build();
+    }
+
+    public AuthenticationResponse OAuthLogin(String email, String name, String image) {
+        Optional<User> optUser = userService.getUserByEmail(email);
+        if(optUser.isPresent()) {
+            return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
+        }
+        var user = User.builder()
+                .lastName(name)
+                .email(email)
+                .role(Role.USER)
+                .provider(Provider.GOOGLE)
+                .avatar(image)
+                .isActive(true)
+                .build();
+        repository.save(user);
+        var jwtToken = jwtService.generateAccessToken(user);
+        var jwtRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(jwtRefreshToken.getToken())
+                .id(user.getIdUser())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .avatar(user.getAvatar())
+                .gender(user.getGender())
+                .error(false)
+                .success(true)
+                .message("Login Successfully!")
                 .build();
     }
 }

@@ -56,6 +56,14 @@ public class AuthController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @PostMapping("/authenticate-oauth")
+    public ResponseEntity<?> authenticateOauth(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String image = payload.get("image");
+        String name = payload.get("name");
+        return ResponseEntity.ok(service.OAuthLogin(email, name, image));
+    }
+
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         return ResponseEntity.ok(service.refreshToken(refreshTokenRequest));
