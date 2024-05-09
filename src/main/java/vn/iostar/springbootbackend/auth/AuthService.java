@@ -66,6 +66,7 @@ public class AuthService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .phoneNumber(request.getPhoneNumber())
+                    .avatar(request.getAvatar())
                     .role(Role.USER)
                     .provider(Provider.DATABASE)
                     .isActive(false)
@@ -265,18 +266,22 @@ public class AuthService {
                 .build();
     }
 
-    public AuthenticationResponse OAuthLogin(String email, String name, String image) {
-        Optional<User> optUser = userService.getUserByEmail(email);
+    public AuthenticationResponse OAuthLogin(RegisterRequest request) {
+        Optional<User> optUser = userService.getUserByEmail(request.getEmail());
         if(optUser.isPresent()) {
             return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
         }
         var user = User.builder()
-                .lastName(name)
-                .email(email)
+                .nickname(request.getNickName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNumber(request.getPhoneNumber())
+                .avatar(request.getAvatar())
                 .role(Role.USER)
-                .provider(Provider.GOOGLE)
-                .avatar(image)
-                .isActive(true)
+                .provider(Provider.DATABASE)
+                .isActive(false)
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateAccessToken(user);
