@@ -280,7 +280,7 @@ public class AuthService {
                 .phoneNumber(request.getPhoneNumber())
                 .avatar(request.getAvatar())
                 .role(Role.USER)
-                .provider(Provider.DATABASE)
+                .provider(Provider.GOOGLE)
                 .isActive(false)
                 .build();
         repository.save(user);
