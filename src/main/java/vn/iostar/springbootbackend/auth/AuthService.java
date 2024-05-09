@@ -114,6 +114,9 @@ public class AuthService {
             return AuthenticationResponse.builder().error(true).type("wrong").message("Email or Password wrong!").success(false).build();
         }
         User user = opt.get();
+        if(user.getProvider() == Provider.GOOGLE) {
+            return AuthenticationResponse.builder().error(true).type("wrong").message("Email or Password wrong!").success(false).build();
+        }
         if(!user.isActive()) {
             return AuthenticationResponse.builder()
                     .error(true)
@@ -269,6 +272,7 @@ public class AuthService {
     public AuthenticationResponse OAuthLogin(RegisterRequest request) {
         Optional<User> optUser = userService.getUserByEmail(request.getEmail());
         if(optUser.isPresent()) {
+            User user = optUser.get();
             return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
         }
         var user = User.builder()
