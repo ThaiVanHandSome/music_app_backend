@@ -26,6 +26,7 @@ import vn.iostar.springbootbackend.service.UserService;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -137,6 +138,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .gender(user.getGender())
+                .provider(user.getProvider())
                 .error(false)
                 .success(true)
                 .message("Login Successfully!")
@@ -269,8 +271,29 @@ public class AuthService {
     public AuthenticationResponse OAuthLogin(RegisterRequest request) {
         Optional<User> optUser = userService.getUserByEmail(request.getEmail());
         if(optUser.isPresent()) {
-            return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
+            User user = optUser.get();
+            String provider = String.valueOf(user.getProvider());
+            if (Objects.equals(provider, "DATABASE")){
+                return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
+            }
+            var jwtToken = jwtService.generateAccessToken(user);
+            var jwtRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(jwtRefreshToken.getToken())
+                    .id(user.getIdUser())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .avatar(user.getAvatar())
+                    .gender(user.getGender())
+                    .provider(user.getProvider())
+                    .error(false)
+                    .success(true)
+                    .message("Login Successfully!")
+                    .build();
         }
+
         var user = User.builder()
                 .nickname(request.getNickName())
                 .firstName(request.getFirstName())
@@ -295,6 +318,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .gender(user.getGender())
+                .provider(user.getProvider())
                 .error(false)
                 .success(true)
                 .message("Login Successfully!")
