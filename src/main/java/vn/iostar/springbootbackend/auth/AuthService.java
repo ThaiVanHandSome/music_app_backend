@@ -135,6 +135,7 @@ public class AuthService {
                 .accessToken(jwtToken)
                 .refreshToken(jwtRefreshToken.getToken())
                 .id(user.getIdUser())
+                .nickname(user.getNickname())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())

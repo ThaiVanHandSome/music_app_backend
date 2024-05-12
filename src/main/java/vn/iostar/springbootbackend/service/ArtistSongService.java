@@ -24,4 +24,8 @@ public class ArtistSongService {
     public List<User> findArtistBySongId(Long idSong){
         return artistSongRepository.findArtistBySongId(idSong);
     }
+
+    public List<Song> getSongsOfArtistDesc(Long idArtist) {
+        return artistSongRepository.findSongsByArtistIdOrderByViewCountDesc(idArtist);
+    }
 }

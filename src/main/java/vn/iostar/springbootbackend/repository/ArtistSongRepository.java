@@ -19,4 +19,7 @@ public interface ArtistSongRepository extends JpaRepository<ArtistSong, ArtistSo
     @Query("SELECT a.artist FROM ArtistSong a WHERE a.artistSongId.idSong = ?1")
     List<User> findArtistBySongId(Long id_song);
 
+    @Query("SELECT a.song FROM ArtistSong a WHERE a.artist.idUser = :artistId ORDER BY a.song.views DESC")
+    List<Song> findSongsByArtistIdOrderByViewCountDesc(Long artistId);
+
 }

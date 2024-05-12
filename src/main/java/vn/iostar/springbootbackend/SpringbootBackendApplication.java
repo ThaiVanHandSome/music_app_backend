@@ -8,14 +8,22 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import vn.iostar.springbootbackend.config.TwilioConfig;
+import vn.iostar.springbootbackend.entity.Provider;
+import vn.iostar.springbootbackend.entity.Role;
+import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
@@ -24,10 +32,19 @@ import javax.annotation.PostConstruct;
 @EnableConfigurationProperties
 public class SpringbootBackendApplication {
 
+	private final PasswordEncoder passwordEncoder;
+
 	@Autowired
 	private TwilioConfig twilioConfig;
 
-	@PostConstruct
+	@Autowired
+	private UserService userService;
+
+    public SpringbootBackendApplication(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @PostConstruct
 	public void setup() {
 		Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
 	}
@@ -47,6 +64,29 @@ public class SpringbootBackendApplication {
 						.allowCredentials(true);;
 			}
 		};
+	}
+
+	@EventListener
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		createUserIfNeeded();
+	}
+
+	private void createUserIfNeeded() {
+		Optional<User> user = userService.getUserByEmail("danitbadao1234@gmail.com");
+		if(user.isEmpty()) {
+			User admin = new User();
+			admin.setEmail("danitbadao1234@gmail.com");
+			admin.setFirstName("Thai");
+			admin.setLastName("Van");
+			admin.setPassword(passwordEncoder.encode("Vanbs1234qq!!"));
+			admin.setRole(Role.ADMIN);
+			admin.setProvider(Provider.DATABASE);
+			admin.setActive(true);
+			admin.setAvatar("");
+			admin.setNickname("");
+			admin.setPhoneNumber("0123456789");
+			userService.save(admin);
+		}
 	}
 
 }

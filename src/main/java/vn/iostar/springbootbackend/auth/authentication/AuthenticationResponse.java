@@ -19,6 +19,7 @@ public class AuthenticationResponse {
     private String type;
     private Long id;
     private String message;
+    private String nickname;
     private String firstName;
     private String lastName;
     private String email;
