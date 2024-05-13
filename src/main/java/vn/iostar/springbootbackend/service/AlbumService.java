@@ -29,4 +29,12 @@ public class AlbumService {
     public List<Album> getAlbumByKeyword(String keyword) {
         return albumRepository.findByNameContaining(keyword);
     }
+
+    public Album saveAlbum(Album album) {
+        return albumRepository.save(album);
+    }
+
+    public int countAlbumsByArtistId(Long idArtist) {
+        return albumRepository.countAlbumsByArtistId(idArtist);
+    }
 }

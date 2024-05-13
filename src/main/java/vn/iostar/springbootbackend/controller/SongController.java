@@ -1,5 +1,6 @@
 package vn.iostar.springbootbackend.controller;
 
+import jdk.jfr.Category;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,17 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.SongCategory;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.model.SongUpload;
 import vn.iostar.springbootbackend.repository.SongRepository;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.AlbumService;
-import vn.iostar.springbootbackend.service.ArtistSongService;
-import vn.iostar.springbootbackend.service.ImageService;
-import vn.iostar.springbootbackend.service.SongService;
+import vn.iostar.springbootbackend.service.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -40,8 +40,13 @@ public class SongController {
 
     @Autowired
     private ArtistSongService artistSongService;
+
     @Autowired
     private SongRepository songRepository;
+
+    @Autowired
+    private SongCategoryService songCategoryService;
+
 
     @GetMapping("/songs")
     public ResponseEntity<?> getAllSongs() {
@@ -119,6 +124,8 @@ public class SongController {
     @PostMapping("/song/upload")
     public ResponseEntity<?> uploadSong(@RequestPart("imageFile") MultipartFile imageFile,
                                         @RequestPart("name") String name,
+                                        @RequestPart("idSongCategory") Long idSongCategory,
+                                        @RequestPart("idAlbum") Long idAlbum,
                                         @RequestPart("resourceFile") MultipartFile resourceFile) throws IOException {
         System.out.println(imageFile.getSize() + " " + imageFile.getOriginalFilename());
         System.out.println(resourceFile.getSize() + " " + resourceFile.getOriginalFilename());
@@ -129,6 +136,14 @@ public class SongController {
         song.setImage(image);
         song.setResource(resource);
         song.setDayCreated(LocalDateTime.now());
+        Optional<Album> album = albumService.getAlbumById(idAlbum);
+        if(album.isPresent()) {
+            song.setAlbum(album.get());
+        }
+        Optional<SongCategory> category = songCategoryService.findById(idSongCategory);
+        if(category.isPresent()) {
+            song.setSongCategory(category.get());
+        }
         songRepository.save(song);
         ResponseMessage responseMessage = new ResponseMessage();
         responseMessage.setError(false);
