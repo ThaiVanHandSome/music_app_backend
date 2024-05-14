@@ -10,6 +10,7 @@ import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.AlbumModel;
+import vn.iostar.springbootbackend.repository.FollowArtistRepository;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ArtistSongService;
@@ -78,5 +79,16 @@ public class ArtistController {
         response.setError(false);
         response.setSuccess(true);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/artist/{idArtist}/followers")
+    public ResponseEntity<?> getAllFollowers(@PathVariable("idArtist") Long id){
+        List<Long> ids = userService.getAllFollowers(id);
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get All Users Successfully!");
+        res.setData(ids);
+        return ResponseEntity.ok(res);
     }
 }

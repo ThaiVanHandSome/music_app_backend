@@ -170,7 +170,7 @@ public class AuthService {
             if(type.equals("confirm")) {
                 userService.enableUser(confirmationToken.getUser().getEmail());
             }
-            return OtpResponse.builder().message("Successfully! Confirmed!").type(type).error(false).success(true).build();
+            return OtpResponse.builder().message("Successfully! Confirmed!").id(confirmationToken.getUser().getIdUser()).type(type).error(false).success(true).build();
         }
         return OtpResponse.builder().message("Token Not Valid!").error(true).success(false).build();
     }

@@ -9,6 +9,7 @@ import org.springframework.util.ReflectionUtils;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.repository.FollowArtistRepository;
 import vn.iostar.springbootbackend.repository.UserRepository;
 
 import java.lang.reflect.Field;
@@ -20,14 +21,18 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
+    private FollowArtistRepository followArtistRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final static String EMAIL_NOT_FOUND_MSG = "Email %s not found!";
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FollowArtistRepository followArtistRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.followArtistRepository = followArtistRepository;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -129,5 +134,13 @@ public class UserService implements UserDetailsService {
 
     public long countArtists() {
         return userRepository.countArtists();
+    }
+
+    public void updateUserInformation(User user){
+        userRepository.save(user);
+    }
+
+    public List<Long> getAllFollowers(Long id){
+        return followArtistRepository.findUserIdsByArtistId(id);
     }
 }
