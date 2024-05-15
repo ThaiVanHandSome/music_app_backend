@@ -143,10 +143,6 @@ public class UserService implements UserDetailsService {
         return userRepository.countArtists();
     }
 
-    public void updateUserInformation(User user){
-        userRepository.save(user);
-    }
-
     public List<Long> getAllFollowers(Long id){
         return followArtistRepository.findUserIdsByArtistId(id);
     }

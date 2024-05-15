@@ -28,9 +28,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
-    Logger logger
-            = LoggerFactory.getLogger(UserController.class);
-    //    private static final Logger logger = Logger.getLogger(MyClass.class);
+
     @Autowired
     private UserService userService;
 
@@ -39,9 +37,6 @@ public class UserController {
 
     @Autowired
     private PlaylistService playlistService;
-
-    @Autowired
-    private ImageService imageService;
 
 
     @Autowired
@@ -150,21 +145,6 @@ public class UserController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, String> reqBody) {
-        String firstName = reqBody.get("firstName");
-        String lastName = reqBody.get("lastName");
-        int gender = Integer.parseInt(reqBody.get("gender"));
-        Optional<User> user = userService.findByIdUser(idUser);
-        if (user.isEmpty()) {
-            return (ResponseEntity<?>) ResponseEntity.notFound();
-        }
-        User userEntity = user.get();
-        userEntity.setFirstName(firstName);
-        userEntity.setLastName(lastName);
-        userEntity.setGender(gender);
-        userService.updateUserInformation(userEntity);
-        Response response = new Response(true, false, "Update Success!", user);
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/user/{idUser}/change-password")
