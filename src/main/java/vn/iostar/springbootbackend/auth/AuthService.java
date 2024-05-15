@@ -296,8 +296,6 @@ public class AuthService {
                     .success(true)
                     .message("Login Successfully!")
                     .build();
-            User user = optUser.get();
-            return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
         }
 
         var user = User.builder()
