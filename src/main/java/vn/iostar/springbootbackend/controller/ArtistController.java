@@ -82,8 +82,8 @@ public class ArtistController {
     }
 
     @GetMapping("/artist/{idArtist}/followers")
-    public ResponseEntity<?> getAllFollowers(@PathVariable("idArtist") Long id){
-        List<Long> ids = userService.getAllFollowers(id);
+    public ResponseEntity<?> getAllFollowers(@PathVariable("idArtist") Long idArtist){
+        List<Long> ids = userService.getAllFollowers(idArtist);
         Response res = new Response();
         res.setError(false);
         res.setSuccess(true);

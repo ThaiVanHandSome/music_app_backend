@@ -140,7 +140,7 @@ public class UserController {
             userEntity.setLastName(lastName);
             userEntity.setGender(gender);
             userService.updateUserInformation(userEntity);
-            Response response = new Response(true, false, "Update Success!", user);
+            Response response = new Response(true, false, "Update Success!", userEntity);
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             throw new RuntimeException(e);
