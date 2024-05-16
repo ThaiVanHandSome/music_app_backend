@@ -26,4 +26,14 @@ public class ArtistSongController {
         Response res = new Response(true, false, "Get Songs Of Artist Successfully!", songs);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/artist/{idArtist}/songs/count")
+    public ResponseEntity<?> getCountOfSongs(@PathVariable("idArtist") Long idArtist) {
+        Response res = new Response();
+        res.setData(artistSongService.countSongsByArtistId(idArtist));
+        res.setMessage("Get Count Songs Of Artist Successfully!");
+        res.setError(false);
+        res.setSuccess(true);
+        return ResponseEntity.ok(res);
+    }
 }

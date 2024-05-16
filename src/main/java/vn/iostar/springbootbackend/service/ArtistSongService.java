@@ -28,4 +28,8 @@ public class ArtistSongService {
     public List<Song> getSongsOfArtistDesc(Long idArtist) {
         return artistSongRepository.findSongsByArtistIdOrderByViewCountDesc(idArtist);
     }
+
+    public int countSongsByArtistId(Long idArtist) {
+        return artistSongRepository.countSongsByArtistId(idArtist);
+    }
 }
