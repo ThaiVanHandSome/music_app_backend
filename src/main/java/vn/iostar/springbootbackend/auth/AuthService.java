@@ -26,6 +26,7 @@ import vn.iostar.springbootbackend.service.UserService;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -141,6 +142,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .gender(user.getGender())
+                .provider(user.getProvider())
                 .error(false)
                 .success(true)
                 .message("Login Successfully!")
@@ -170,7 +172,7 @@ public class AuthService {
             if(type.equals("confirm")) {
                 userService.enableUser(confirmationToken.getUser().getEmail());
             }
-            return OtpResponse.builder().message("Successfully! Confirmed!").type(type).error(false).success(true).build();
+            return OtpResponse.builder().message("Successfully! Confirmed!").id(confirmationToken.getUser().getIdUser()).type(type).error(false).success(true).build();
         }
         return OtpResponse.builder().message("Token Not Valid!").error(true).success(false).build();
     }
@@ -274,8 +276,28 @@ public class AuthService {
         Optional<User> optUser = userService.getUserByEmail(request.getEmail());
         if(optUser.isPresent()) {
             User user = optUser.get();
-            return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
+            String provider = String.valueOf(user.getProvider());
+            if (Objects.equals(provider, "DATABASE")){
+                return AuthenticationResponse.builder().error(true).success(false).message("Email Already Existed!").build();
+            }
+            var jwtToken = jwtService.generateAccessToken(user);
+            var jwtRefreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(jwtRefreshToken.getToken())
+                    .id(user.getIdUser())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .email(user.getEmail())
+                    .avatar(user.getAvatar())
+                    .gender(user.getGender())
+                    .provider(user.getProvider())
+                    .error(false)
+                    .success(true)
+                    .message("Login Successfully!")
+                    .build();
         }
+
         var user = User.builder()
                 .nickname(request.getNickName())
                 .firstName(request.getFirstName())
@@ -285,7 +307,7 @@ public class AuthService {
                 .phoneNumber(request.getPhoneNumber())
                 .avatar(request.getAvatar())
                 .role(Role.USER)
-                .provider(Provider.DATABASE)
+                .provider(Provider.GOOGLE)
                 .isActive(false)
                 .build();
         repository.save(user);
@@ -300,6 +322,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .gender(user.getGender())
+                .provider(user.getProvider())
                 .error(false)
                 .success(true)
                 .message("Login Successfully!")

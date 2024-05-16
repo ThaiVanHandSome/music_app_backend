@@ -9,25 +9,31 @@ import org.springframework.util.ReflectionUtils;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.repository.FollowArtistRepository;
 import vn.iostar.springbootbackend.repository.UserRepository;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
+    private FollowArtistRepository followArtistRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final static String EMAIL_NOT_FOUND_MSG = "Email %s not found!";
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FollowArtistRepository followArtistRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.followArtistRepository = followArtistRepository;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -47,7 +53,6 @@ public class UserService implements UserDetailsService {
 
         if (userEntityOptional.isPresent()) {
             User userEntity = userEntityOptional.get();
-
             fields.forEach((key, value) -> {
                 Field field = ReflectionUtils.findField(User.class, key);
                 if (field != null) {
@@ -66,7 +71,11 @@ public class UserService implements UserDetailsService {
             userRepository.save(userEntity);
             return userEntity;
         }
+
         return null;
+    }
+    public void updateUserInformation(User user) {
+            userRepository.save(user);
     }
 
     public Optional<User> findByIdUser(Long idUser) {
@@ -89,11 +98,14 @@ public class UserService implements UserDetailsService {
         return userRepository.enableUser(email);
     }
 
-    public RegisterResponse changePassword(Long idUser, String password) {
+    public RegisterResponse changePassword(Long idUser, String oldPassword, String newPassword) {
         Optional<User> optUser = userRepository.findByIdUser(idUser);
         if(optUser.isPresent()) {
             User user = optUser.get();
-            user.setPassword(passwordEncoder.encode(password));
+            if (Objects.equals(passwordEncoder.encode(oldPassword), user.getPassword())){
+                return RegisterResponse.builder().message("Password is wrong").error(true).success(false).build();
+            }
+            user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             return RegisterResponse.builder().message("Change Password Successfully!").error(false).success(true).build();
         }
@@ -129,5 +141,9 @@ public class UserService implements UserDetailsService {
 
     public long countArtists() {
         return userRepository.countArtists();
+    }
+
+    public List<Long> getAllFollowers(Long id){
+        return followArtistRepository.findUserIdsByArtistId(id);
     }
 }

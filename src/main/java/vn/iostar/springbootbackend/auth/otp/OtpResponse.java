@@ -14,4 +14,5 @@ public class OtpResponse {
     private boolean error;
     private String message;
     private String type;
+    private Long id;
 }

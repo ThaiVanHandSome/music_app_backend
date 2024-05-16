@@ -3,27 +3,41 @@ package vn.iostar.springbootbackend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
+import vn.iostar.springbootbackend.service.ImageService;
 import vn.iostar.springbootbackend.service.PlaylistService;
 import vn.iostar.springbootbackend.service.SongLikedService;
 import vn.iostar.springbootbackend.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
+
     @Autowired
     private UserService userService;
-  
+
+    @Autowired
+    private ImageService imageService;
+
     @Autowired
     private PlaylistService playlistService;
+
 
     @Autowired
     private SongLikedService songLikedService;
@@ -90,18 +104,54 @@ public class UserController {
         res.setData(userService.getUserByEmail(email));
         return ResponseEntity.ok(res);
     }
-  
+
+    @PostMapping("/user/upload")
+    public ResponseEntity<?> uploadAvatar(@RequestPart("imageFile") MultipartFile imageFile, @RequestPart Long idUser) {
+        try {
+            String imageUrl = imageService.uploadImage(imageFile);
+            Optional<User> user = userService.findByIdUser(idUser);
+            if (user.isEmpty() || !Objects.equals(user.get().getIdUser(), idUser)) {
+                return (ResponseEntity<?>) ResponseEntity.notFound();
+            }
+            User userEntity = user.get();
+            userEntity.setAvatar(imageUrl);
+            userService.updateUserInformation(userEntity);
+            Response response = new Response(true, false, "Update Success!", user);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @PatchMapping("/user/{idUser}")
-    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, Object> fields) {
-        User user = userService.updateUserByFields(idUser, fields);
-        Response response = new Response(true, false, "Update Success!", user);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, String> reqBody,@RequestPart("imageFile") MultipartFile imageFile) {
+        try {
+            String imageUrl = imageService.uploadImage(imageFile);
+            String firstName = reqBody.get("firstName");
+            String lastName = reqBody.get("lastName");
+            int gender = Integer.parseInt(reqBody.get("gender"));
+            Optional<User> user = userService.findByIdUser(idUser);
+            if(user.isEmpty()){
+                return (ResponseEntity<?>) ResponseEntity.notFound();
+            }
+            User userEntity = user.get();
+            userEntity.setAvatar(imageUrl);
+            userEntity.setFirstName(firstName);
+            userEntity.setLastName(lastName);
+            userEntity.setGender(gender);
+            userService.updateUserInformation(userEntity);
+            Response response = new Response(true, false, "Update Success!", userEntity);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PatchMapping("/user/{idUser}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable("idUser") Long idUser, @RequestBody Map<String, String> reqBody) {
-        String password = reqBody.get("password");
-        return ResponseEntity.ok(userService.changePassword(idUser, password));
+        String oldPassword = reqBody.get("oldPassword");
+        String newPassword = reqBody.get("newPassword");
+        return ResponseEntity.ok(userService.changePassword(idUser, oldPassword, newPassword));
     }
 
     @PatchMapping("/user/forgot-password")
