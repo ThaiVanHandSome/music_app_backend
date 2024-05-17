@@ -3,13 +3,10 @@ package vn.iostar.springbootbackend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.iostar.springbootbackend.embededId.PlaylistSongId;
-import vn.iostar.springbootbackend.entity.PlaylistSong;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.PlaylistSongService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -34,11 +31,11 @@ public class PlaylistSongController {
 
     @PostMapping("/{id_playlist}/{id_song}")
     public ResponseEntity<?> addSongToPlaylist(@PathVariable Long id_playlist, @PathVariable Long id_song) {
-        PlaylistSong entity = new PlaylistSong();
-        entity.setPlaylistSongId(new PlaylistSongId(id_playlist, id_song));
-        entity.setDayAdded(LocalDateTime.now());
-        playlistSongService.save(entity);
-        Response res = new Response(true, false, "Add Song To Playlist Successfully!", null);
+        boolean songIsExists = playlistSongService.isSongExistsInPlaylist(id_playlist, id_song);
+        if (!songIsExists) {
+            playlistSongService.addSongToPlaylist(id_playlist, id_song);
+        }
+        Response res = new Response(true, false, "Success", !songIsExists);
         return ResponseEntity.ok(res);
     }
 }

@@ -7,6 +7,7 @@ import vn.iostar.springbootbackend.entity.Playlist;
 import vn.iostar.springbootbackend.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
@@ -14,4 +15,8 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
     @Query("SELECT p FROM Playlist p WHERE p.user.idUser = ?1 ORDER BY p.dayCreated DESC")
     List<Playlist> getPlaylistsByIdUser(Long idUser);
+
+    @Query("SELECT p FROM Playlist p WHERE p.name = ?1")
+    Optional<Playlist> findPlaylistByName(String name);
+
 }
