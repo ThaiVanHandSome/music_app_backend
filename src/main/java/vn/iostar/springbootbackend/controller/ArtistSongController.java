@@ -36,4 +36,33 @@ public class ArtistSongController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/artist/{idArtist}/views/count")
+    public ResponseEntity<?> getCountOfViews(@PathVariable("idArtist") Long idArtist) {
+        Response res = new Response();
+        res.setData(artistSongService.countTotalViewsByArtistId(idArtist));
+        res.setMessage("Get Count Songs Of Artist Successfully!");
+        res.setError(false);
+        res.setSuccess(true);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/artist/{idArtist}/likes/count")
+    public ResponseEntity<?> getCountOfLikes(@PathVariable("idArtist") Long idArtist) {
+        Response res = new Response();
+        res.setData(artistSongService.countUsersByArtistId(idArtist));
+        res.setMessage("Get Count Songs Of Artist Successfully!");
+        res.setError(false);
+        res.setSuccess(true);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/artist/{idArtist}/comments/count")
+    public ResponseEntity<?> getCountOfComments(@PathVariable("idArtist") Long idArtist) {
+        Response res = new Response();
+        res.setData(artistSongService.countCommentsByArtistId(idArtist));
+        res.setMessage("Get Count Songs Of Artist Successfully!");
+        res.setError(false);
+        res.setSuccess(true);
+        return ResponseEntity.ok(res);
+    }
 }

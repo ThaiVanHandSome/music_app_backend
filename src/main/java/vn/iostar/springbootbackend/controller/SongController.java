@@ -10,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import vn.iostar.springbootbackend.entity.Album;
-import vn.iostar.springbootbackend.entity.Song;
-import vn.iostar.springbootbackend.entity.SongCategory;
-import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.embededId.ArtistSongId;
+import vn.iostar.springbootbackend.entity.*;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.model.SongUpload;
@@ -46,6 +44,8 @@ public class SongController {
 
     @Autowired
     private SongCategoryService songCategoryService;
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping("/songs")
@@ -66,8 +66,24 @@ public class SongController {
     public ResponseEntity<?> getSongById(@PathVariable("id") Long id) {
         Optional<Song> optSong = songService.getSongById(id);
         if(optSong.isPresent()) {
-            Response res = new Response(true, false, "Get Song Successfully!", optSong.get());
+            SongModel songModel = new SongModel();
+            BeanUtils.copyProperties(optSong.get(), songModel);
+            songModel.setCntComments(optSong.get().getSongComments().size());
+            songModel.setCntLikes(optSong.get().getSongLikeds().size());
+            Response res = new Response(true, true, "Get Song Successfully!", songModel);
             return ResponseEntity.ok(res);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find song");
+    }
+
+    @DeleteMapping("/song/{id}")
+    public ResponseEntity<?> deleteSong(@PathVariable("id") Long id) {
+        Optional<Song> optSong = songService.getSongById(id);
+        if(optSong.isPresent()) {
+            Song song = optSong.get();
+            songRepository.delete(song);
+            ResponseMessage responseMessage = new ResponseMessage("Delete Successfully!", true, false);
+            return ResponseEntity.ok(responseMessage);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find song");
     }
@@ -123,6 +139,7 @@ public class SongController {
 
     @PostMapping("/song/upload")
     public ResponseEntity<?> uploadSong(@RequestPart("imageFile") MultipartFile imageFile,
+                                        @RequestPart("idArtist") Long idArtist,
                                         @RequestPart("name") String name,
                                         @RequestPart("idSongCategory") Long idSongCategory,
                                         @RequestPart("idAlbum") Long idAlbum,
@@ -131,6 +148,7 @@ public class SongController {
         System.out.println(resourceFile.getSize() + " " + resourceFile.getOriginalFilename());
         String image = imageService.uploadImage(imageFile);
         String resource = songService.uploadAudio(resourceFile);
+        name = name.replace("\"", "");
         Song song = new Song();
         song.setName(name);
         song.setImage(image);
@@ -144,11 +162,11 @@ public class SongController {
         if(category.isPresent()) {
             song.setSongCategory(category.get());
         }
-        songRepository.save(song);
-        ResponseMessage responseMessage = new ResponseMessage();
-        responseMessage.setError(false);
-        responseMessage.setSuccess(true);
-        responseMessage.setMessage("Uploaded Successfully!");
-        return ResponseEntity.ok(responseMessage);
+        Song newSong = songRepository.save(song);
+        User artist = userService.findByIdUser(idArtist).get();
+        ArtistSongId artistSongId = new ArtistSongId(artist.getIdUser(), newSong.getIdSong());
+        artistSongService.save(new ArtistSong(artistSongId, artist, newSong));
+        Response res = new Response(true, false, "Uploaded Successfully!", newSong);
+        return ResponseEntity.ok(res);
     }
 }

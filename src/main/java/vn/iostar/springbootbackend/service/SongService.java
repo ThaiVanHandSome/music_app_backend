@@ -96,4 +96,7 @@ public class SongService {
         return (String) result.get("url");
     }
 
+    public void deleteSong(Song song) {
+        songRepository.delete(song);
+    }
 }
