@@ -144,12 +144,6 @@ public class SongController {
         if(category.isPresent()) {
             song.setSongCategory(category.get());
         }
-        songRepository.save(song);
-        ResponseMessage responseMessage = new ResponseMessage();
-        responseMessage.setError(false);
-        responseMessage.setSuccess(true);
-        responseMessage.setMessage("Uploaded Successfully!");
-        return ResponseEntity.ok(responseMessage);
         Song savedSong = songRepository.save(song);
         Response res = new Response(true, false, "Uploaded Successfully!",savedSong);
         return ResponseEntity.ok(res);
