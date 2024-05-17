@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Album;
+import vn.iostar.springbootbackend.entity.ArtistSong;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongRepository;
@@ -34,6 +35,11 @@ public class SongService {
         List<Song> songs = songRepository.findAll();
         return convertToSongModel(songs);
     }
+
+    public void saveSong(Song song) {
+        songRepository.save(song);
+    }
+
     public Optional<Song> getSongById(Long id) {
         return songRepository.findById(id);
     }

@@ -17,7 +17,7 @@ public class SongCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_song_category")
-    private Long songCategoryId;
+    private Long idSongCategory;
 
     @Column(name = "name", nullable = false, columnDefinition = "nvarchar(1000)")
     private String name;
