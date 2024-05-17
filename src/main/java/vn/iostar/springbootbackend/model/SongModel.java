@@ -20,4 +20,6 @@ public class SongModel {
     private String image;
     private Long artistId;
     private String artistName;
+    private int cntComments;
+    private int cntLikes;
 }

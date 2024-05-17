@@ -37,4 +37,16 @@ public class ArtistSongService {
     public void save(ArtistSong artistSong) {
         artistSongRepository.save(artistSong);
     }
+
+    public int countTotalViewsByArtistId(Long idArtist) {
+        return artistSongRepository.countTotalViewsByArtistId(idArtist);
+    }
+
+    public int countUsersByArtistId(Long idArtist) {
+        return artistSongRepository.countUsersByArtistId(idArtist);
+    }
+
+    public int countCommentsByArtistId(Long idArtist) {
+        return artistSongRepository.countCommentsByArtistId(idArtist);
+    }
 }

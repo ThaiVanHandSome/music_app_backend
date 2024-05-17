@@ -66,8 +66,24 @@ public class SongController {
     public ResponseEntity<?> getSongById(@PathVariable("id") Long id) {
         Optional<Song> optSong = songService.getSongById(id);
         if(optSong.isPresent()) {
-            Response res = new Response(true, false, "Get Song Successfully!", optSong.get());
+            SongModel songModel = new SongModel();
+            BeanUtils.copyProperties(optSong.get(), songModel);
+            songModel.setCntComments(optSong.get().getSongComments().size());
+            songModel.setCntLikes(optSong.get().getSongLikeds().size());
+            Response res = new Response(true, true, "Get Song Successfully!", songModel);
             return ResponseEntity.ok(res);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find song");
+    }
+
+    @DeleteMapping("/song/{id}")
+    public ResponseEntity<?> deleteSong(@PathVariable("id") Long id) {
+        Optional<Song> optSong = songService.getSongById(id);
+        if(optSong.isPresent()) {
+            Song song = optSong.get();
+            songRepository.delete(song);
+            ResponseMessage responseMessage = new ResponseMessage("Delete Successfully!", true, false);
+            return ResponseEntity.ok(responseMessage);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find song");
     }
@@ -132,6 +148,7 @@ public class SongController {
         System.out.println(resourceFile.getSize() + " " + resourceFile.getOriginalFilename());
         String image = imageService.uploadImage(imageFile);
         String resource = songService.uploadAudio(resourceFile);
+        name = name.replace("\"", "");
         Song song = new Song();
         song.setName(name);
         song.setImage(image);

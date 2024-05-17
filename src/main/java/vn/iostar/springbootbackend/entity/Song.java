@@ -39,7 +39,6 @@ public class Song implements Serializable {
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
 
-
     @JsonIgnoreProperties("songs")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
