@@ -3,6 +3,7 @@ package vn.iostar.springbootbackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.iostar.springbootbackend.entity.ArtistSong;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.repository.ArtistSongRepository;
@@ -31,5 +32,9 @@ public class ArtistSongService {
 
     public int countSongsByArtistId(Long idArtist) {
         return artistSongRepository.countSongsByArtistId(idArtist);
+    }
+
+    public void save(ArtistSong artistSong) {
+        artistSongRepository.save(artistSong);
     }
 }
