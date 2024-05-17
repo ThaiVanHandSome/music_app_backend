@@ -1,5 +1,7 @@
 package vn.iostar.springbootbackend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -134,6 +136,9 @@ public class UserService implements UserDetailsService {
     public List<User> findByRoles(List<Role> roles) {
         return userRepository.findByRoles(roles);
     }
+    public Page<User> findByRoles(List<Role> roles, Pageable pageable) {
+        return userRepository.findByRoles(roles, pageable);
+    }
 
     public long countUsers() {
         return userRepository.count();
@@ -146,4 +151,5 @@ public class UserService implements UserDetailsService {
     public List<Long> getAllFollowers(Long id){
         return followArtistRepository.findUserIdsByArtistId(id);
     }
+
 }
