@@ -95,4 +95,5 @@ public class SongService {
         Map<?, ?> result = cloudinary.uploader().upload(audioFile.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
         return (String) result.get("url");
     }
+
 }

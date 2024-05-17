@@ -2,11 +2,14 @@ package vn.iostar.springbootbackend.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Album;
+import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.AlbumModel;
@@ -14,6 +17,7 @@ import vn.iostar.springbootbackend.repository.FollowArtistRepository;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ArtistSongService;
+import vn.iostar.springbootbackend.service.SongService;
 import vn.iostar.springbootbackend.service.UserService;
 
 import java.util.ArrayList;
@@ -31,6 +35,15 @@ public class ArtistController {
 
     @Autowired
     ArtistSongService artistSongService;
+
+    @GetMapping("/artists")
+    public ResponseEntity<?> getAllArtists(Pageable pageable) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ARTIST);
+        Page<User> artists = userService.findByRoles(roles, pageable);
+        Response res = new Response(true, false, "Get Songs By Most Likes Successfully!", artists);
+        return ResponseEntity.ok(res);
+    }
 
     @GetMapping("/artist/{id}")
     public ResponseEntity<?> getArtistById(@PathVariable("id") Long id) {
@@ -71,8 +84,8 @@ public class ArtistController {
     }
 
     @GetMapping("/artist/{idArtist}/songs/desc")
-    public ResponseEntity<?> getSongsOfArtistDesc(@PathVariable("idArtist") Long idArtist) {
-        List<Song> songs = artistSongService.getSongsOfArtistDesc(idArtist);
+    public ResponseEntity<?> getSongsOfArtistDesc(@PathVariable("idArtist") Long idArtist, Pageable pageable) {
+        Page<Song> songs = artistSongService.getSongsOfArtistDesc(idArtist, pageable);
         Response response = new Response();
         response.setData(songs);
         response.setMessage("Get Songs Of Artist Successfully!");
@@ -91,4 +104,5 @@ public class ArtistController {
         res.setData(ids);
         return ResponseEntity.ok(res);
     }
+
 }

@@ -2,6 +2,8 @@ package vn.iostar.springbootbackend.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
@@ -17,16 +19,16 @@ public class ArtistSongService {
         this.artistSongRepository = artistSongRepository;
     }
 
-    public List<Song> findAllSongsByArtistId(Long id_artist) {
-        return artistSongRepository.findAllSongsByArtistId(id_artist);
+    public Page<Song> findAllSongsByArtistId(Long id_artist, Pageable pageable) {
+        return artistSongRepository.findAllSongsByArtistId(id_artist, pageable);
     }
 
     public List<User> findArtistBySongId(Long idSong){
         return artistSongRepository.findArtistBySongId(idSong);
     }
 
-    public List<Song> getSongsOfArtistDesc(Long idArtist) {
-        return artistSongRepository.findSongsByArtistIdOrderByViewCountDesc(idArtist);
+    public Page<Song> getSongsOfArtistDesc(Long idArtist, Pageable pageable) {
+        return artistSongRepository.findSongsByArtistIdOrderByViewCountDesc(idArtist, pageable);
     }
 
     public int countSongsByArtistId(Long idArtist) {
