@@ -83,7 +83,6 @@ public class PlaylistService {
     }
 
     public void deletePlaylist(Playlist playlist) {
-        //playlist.getPlaylistSongs().clear();
         playlistRepository.delete(playlist);
     }
 
@@ -112,5 +111,14 @@ public class PlaylistService {
             playlist.setImage(song.getImage());
         }
         playlistRepository.save(playlist);
+    }
+
+    public void sortPlaylistSongsByDayAdded(Playlist playlist) {
+        playlist.getPlaylistSongs().sort((o1, o2) -> o2.getDayAdded().compareTo(o1.getDayAdded()));
+    }
+
+    public boolean isPlaylistNameExists(String name) {
+        Optional<Playlist> playlist = playlistRepository.findPlaylistByName(name);
+        return playlist.isPresent();
     }
 }

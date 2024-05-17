@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface PlaylistSongRepository extends JpaRepository<PlaylistSong, Long> {
-    @Query("SELECT s.song FROM PlaylistSong s WHERE s.playlistSongId.idPlaylist = ?1")
+    @Query("SELECT s.song FROM PlaylistSong s WHERE s.playlistSongId.idPlaylist = ?1 ORDER BY s.dayAdded ASC")
     List<Song> findAllByPlaylistSongId(Long id_playlist);
 
     @Modifying
@@ -20,4 +20,10 @@ public interface PlaylistSongRepository extends JpaRepository<PlaylistSong, Long
     @Query("DELETE FROM PlaylistSong s WHERE s.playlistSongId.idPlaylist = ?1 AND s.playlistSongId.idSong = ?2")
     int deleteByPlaylistSongId(Long id_playlist, Long id_song);
 
+    @Query("SELECT COUNT(ps) FROM PlaylistSong ps WHERE ps.playlistSongId.idPlaylist = ?1 AND ps.playlistSongId.idSong = ?2")
+    int count(Long id_playlist, Long idSong);
+
+    default boolean isSongExistsInPlaylist(Long id_playlist, Long idSong) {
+        return count(id_playlist, idSong) > 0;
+    }
 }

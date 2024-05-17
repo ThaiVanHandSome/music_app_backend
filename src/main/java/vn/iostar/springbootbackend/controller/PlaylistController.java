@@ -37,8 +37,16 @@ public class PlaylistController {
     public ResponseEntity<?> getPlaylistById(@PathVariable Long id_playlist) {
         Playlist playlist = playlistService.getPlaylistById(id_playlist).orElseThrow();
         playlistService.setPlaylistImageByFirstSongImage(id_playlist);
+        playlistService.sortPlaylistSongsByDayAdded(playlist);
         PlaylistModel playlistModel = playlistService.convertToPlaylistModel(playlist);
         Response response = new Response(true, false,"Playlist found", playlistModel);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/playlist")
+    public ResponseEntity<?> isPlaylistNameExists(@RequestParam String name) {
+        boolean isExists = playlistService.isPlaylistNameExists(name);
+        Response response = new Response(true, false,"Successfully!", isExists);
         return ResponseEntity.ok(response);
     }
 
