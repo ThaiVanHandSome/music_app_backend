@@ -26,4 +26,7 @@ public interface PlaylistSongRepository extends JpaRepository<PlaylistSong, Long
     default boolean isSongExistsInPlaylist(Long id_playlist, Long idSong) {
         return count(id_playlist, idSong) > 0;
     }
+
+    @Query("SELECT COUNT(ps) FROM PlaylistSong ps WHERE ps.playlistSongId.idPlaylist = ?1")
+    int countSongsByPlaylistId(Long id_playlist);
 }
