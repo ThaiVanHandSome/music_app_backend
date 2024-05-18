@@ -62,4 +62,8 @@ public class PlaylistSongService {
     public boolean isSongExistsInPlaylist(Long id_playlist, Long idSong) {
         return playlistSongRepository.isSongExistsInPlaylist(id_playlist, idSong);
     }
+
+    public int countSongsByPlaylistId(Long id_playlist) {
+        return playlistSongRepository.countSongsByPlaylistId(id_playlist);
+    }
 }

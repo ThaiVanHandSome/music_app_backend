@@ -21,7 +21,7 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JWTAuthenticationFilter jwtAuthFilter;
     private static final String[] AUTH_WHITELIST = {
-            "/swagger-resources/**", "/swagger-ui.html", "/v2/api-docs", "/webjars/**" };
+            "/swagger-resources/**", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/swagger-ui/**" };
 
 
     @Bean
@@ -40,7 +40,6 @@ public class SecurityConfiguration {
                 .antMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers(HttpMethod.PATCH, "/api/v1/user/").hasRole(Role.ADMIN.name())
                 .antMatchers("/api/v1/artist/**").hasRole(Role.ARTIST.name())
-                .antMatchers("/api/v1/artists/**").hasRole(Role.ARTIST.name())
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

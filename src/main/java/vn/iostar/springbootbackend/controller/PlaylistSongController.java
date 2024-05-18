@@ -25,7 +25,8 @@ public class PlaylistSongController {
     @DeleteMapping("/{id_playlist}/{id_song}")
     public ResponseEntity<?> deleteSongFromPlaylist(@PathVariable Long id_playlist, @PathVariable Long id_song) {
         int isSuccess = playlistSongService.deleteByPlaylistSongId(id_playlist, id_song);
-        Response res = new Response(true, false, "Delete Song From Playlist Successfully!", isSuccess);
+        int countSongs = playlistSongService.countSongsByPlaylistId(id_playlist);
+        Response res = new Response(true, false, "Delete Song From Playlist Successfully!", countSongs);
         return ResponseEntity.ok(res);
     }
 
