@@ -12,4 +12,9 @@ public interface FollowArtistRepository extends JpaRepository<FollowArtist, Foll
 
     @Query("SELECT f.user.idUser FROM FollowArtist f WHERE f.followArtistId.idArtist = :artistId")
     List<Long> findUserIdsByArtistId(Long artistId);
+
+    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END FROM FollowArtist f WHERE f.followArtistId.idArtist = :artistId AND f.followArtistId.idUser = :userId")
+    boolean existsByArtistIdAndUserId(long artistId, long userId);
+
+
 }
