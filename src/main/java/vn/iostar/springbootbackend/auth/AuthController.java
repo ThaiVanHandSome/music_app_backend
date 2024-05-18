@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.iostar.springbootbackend.auth.authentication.AuthenticationRequest;
-import vn.iostar.springbootbackend.auth.authentication.AuthenticationResponse;
 import vn.iostar.springbootbackend.auth.email.EmailService;
 import vn.iostar.springbootbackend.auth.refreshToken.RefreshTokenRequest;
 import vn.iostar.springbootbackend.auth.registration.RegisterRequest;
-import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
-import vn.iostar.springbootbackend.entity.RefreshToken;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.service.RefreshTokenService;
 

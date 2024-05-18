@@ -166,7 +166,11 @@ public class SongController {
         User artist = userService.findByIdUser(idArtist).get();
         ArtistSongId artistSongId = new ArtistSongId(artist.getIdUser(), newSong.getIdSong());
         artistSongService.save(new ArtistSong(artistSongId, artist, newSong));
-        Response res = new Response(true, false, "Uploaded Successfully!", newSong);
+        SongModel songModel = new SongModel();
+        BeanUtils.copyProperties(song, songModel);
+        songModel.setArtistId(idArtist);
+        songModel.setArtistName(artist.getNickname());
+        Response res = new Response(true, false, "Uploaded Successfully!", songModel);
         return ResponseEntity.ok(res);
     }
 }
