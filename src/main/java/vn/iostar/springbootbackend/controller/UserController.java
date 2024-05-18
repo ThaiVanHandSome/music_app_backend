@@ -10,10 +10,7 @@ import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.ImageService;
-import vn.iostar.springbootbackend.service.PlaylistService;
-import vn.iostar.springbootbackend.service.SongLikedService;
-import vn.iostar.springbootbackend.service.UserService;
+import vn.iostar.springbootbackend.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +39,9 @@ public class UserController {
 
     @Autowired
     private SongLikedService songLikedService;
+
+    @Autowired
+    private FollowArtistService followArtistService;
 
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
@@ -201,6 +201,28 @@ public class UserController {
     public ResponseEntity<?> getNotLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
         List<SongModel> songs = songLikedService.getNotLikedSongsByIdUser(idUser);
         Response response = new Response(true, false, "Get Not Liked Songs Success!", songs);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/{id_user}/is-followed-artist")
+    public ResponseEntity<?> isUserFollowedArtist(@PathVariable("id_user") Long idUser, @RequestParam("id_artist") Long idArtist) {
+        boolean isFollowed = followArtistService.existsByArtistIdAndUserId(idArtist, idUser);
+        Response response = new Response(true, false, "Check Successfully!", isFollowed);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/user/{id_user}/follow-artist")
+    public ResponseEntity<?> followArtist(@PathVariable("id_user") Long idUser, @RequestParam("id_artist") Long idArtist) {
+        if (followArtistService.existsByArtistIdAndUserId(idArtist, idUser)){
+            followArtistService.deleteFollowArtist(idArtist, idUser);
+            Response response = new Response(true, false, "Unfollow Artist Successfully!", false);
+            return ResponseEntity.ok(response);
+        }
+
+        Response response = new Response(false, true, "Follow Artist Failed!", false);
+        if (followArtistService.saveFollowArtist(idArtist, idUser) != null) {
+            response = new Response(true, false, "Follow Artist Successfully!", true);
+        }
         return ResponseEntity.ok(response);
     }
 }
