@@ -116,7 +116,7 @@ public class SongController {
 
     @GetMapping("/song/most-views")
     public ResponseEntity<?> getSongsByMostViews(Pageable pageable) {
-        Page<Song> songs = songService.getSongsByMostViews(pageable);
+        Page<SongModel> songs = songService.getSongsByMostViews(pageable);
         System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
         Response res = new Response(true, false, "Get Songs By Most Views Successfully!", songs);
         return ResponseEntity.ok(res);
@@ -124,7 +124,7 @@ public class SongController {
 
     @GetMapping("/song/most-likes")
     public ResponseEntity<?> getSongsByMostLikes(Pageable pageable) {
-        Page<Song> songs = songService.getSongsByMostLikes(pageable);
+        Page<SongModel> songs = songService.getSongsByMostLikes(pageable);
         System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
         Response res = new Response(true, false, "Get Songs By Most Likes Successfully!", songs);
         return ResponseEntity.ok(res);
@@ -132,7 +132,7 @@ public class SongController {
 
     @GetMapping("/song/new-released")
     public ResponseEntity<?> getSongsByDayCreated(Pageable pageable) {
-        Page<Song> songs = songService.getSongsByDayCreated(pageable);
+        Page<SongModel> songs = songService.getSongsByDayCreated(pageable);
         System.out.println("pageable: " + pageable.getPageNumber() + " " + pageable.getPageSize());
         Response res = new Response(true, false, "Get Songs By Day Created Successfully!", songs);
         return ResponseEntity.ok(res);

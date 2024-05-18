@@ -93,7 +93,7 @@ public class PlaylistService {
         playlistModel.setName(playlist.getName());
         playlistModel.setDayCreated(playlist.getDayCreated());
         playlistModel.setImage(playlist.getImage());
-        playlistModel.setSongs(songService.convertToSongModel(
+        playlistModel.setSongs(songService.convertToSongModelList(
                 playlistSongRepository.findAllByPlaylistSongId(playlist.getIdPlaylist()))
         );
         return playlistModel;
@@ -120,5 +120,9 @@ public class PlaylistService {
     public boolean isPlaylistNameExists(String name) {
         Optional<Playlist> playlist = playlistRepository.findPlaylistByName(name);
         return playlist.isPresent();
+    }
+
+    public void savePlaylist(Playlist playlist) {
+        playlistRepository.save(playlist);
     }
 }
