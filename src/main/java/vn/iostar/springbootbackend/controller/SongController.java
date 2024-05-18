@@ -10,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import vn.iostar.springbootbackend.entity.Album;
-import vn.iostar.springbootbackend.entity.Song;
-import vn.iostar.springbootbackend.entity.SongCategory;
-import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.embededId.ArtistSongId;
+import vn.iostar.springbootbackend.entity.*;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.model.SongUpload;
@@ -46,6 +44,8 @@ public class SongController {
 
     @Autowired
     private SongCategoryService songCategoryService;
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping("/songs")
@@ -123,6 +123,7 @@ public class SongController {
 
     @PostMapping("/song/upload")
     public ResponseEntity<?> uploadSong(@RequestPart("imageFile") MultipartFile imageFile,
+                                        @RequestPart("idArtist") Long idArtist,
                                         @RequestPart("name") String name,
                                         @RequestPart("idSongCategory") Long idSongCategory,
                                         @RequestPart("idAlbum") Long idAlbum,
@@ -144,8 +145,15 @@ public class SongController {
         if(category.isPresent()) {
             song.setSongCategory(category.get());
         }
-        Song savedSong = songRepository.save(song);
-        Response res = new Response(true, false, "Uploaded Successfully!",savedSong);
+        Song newSong = songRepository.save(song);
+        User artist = userService.findByIdUser(idArtist).get();
+        ArtistSongId artistSongId = new ArtistSongId(artist.getIdUser(), newSong.getIdSong());
+        artistSongService.save(new ArtistSong(artistSongId, artist, newSong));
+        SongModel songModel = new SongModel();
+        BeanUtils.copyProperties(song, songModel);
+        songModel.setArtistId(idArtist);
+        songModel.setArtistName(artist.getNickname());
+        Response res = new Response(true, false, "Uploaded Successfully!", songModel);
         return ResponseEntity.ok(res);
     }
 }

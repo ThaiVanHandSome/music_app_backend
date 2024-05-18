@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "songs")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Song implements Serializable {
 
     @Id
