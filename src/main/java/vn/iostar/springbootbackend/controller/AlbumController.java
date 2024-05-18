@@ -8,11 +8,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.model.AlbumModel;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
@@ -52,10 +54,29 @@ public class AlbumController {
     public ResponseEntity<?> getAlbumById(@PathVariable("id") Long id) {
         Optional<Album> foundAlbum = albumService.getAlbumById(id);
         if (foundAlbum.isPresent()) {
-            Response res = new Response(true, false, "Get Album Successfully!", foundAlbum.get());
+            AlbumModel model = new AlbumModel();
+            BeanUtils.copyProperties(foundAlbum.get(), model);
+            model.setCntSong(foundAlbum.get().getSongs().size());
+            Response res = new Response(true, false, "Get Album Successfully!", model);
             return ResponseEntity.ok(res);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can not find album with id: " + id);
+    }
+
+    @PatchMapping("/album/update")
+    public ResponseEntity<?> updateAlbum(@RequestPart("idAlbum") Long idAlbum, @RequestPart("imageFile") @Nullable MultipartFile imageFile, @RequestPart("albumName") String albumName) throws IOException {
+        Optional<Album> foundAlbum = albumService.getAlbumById(idAlbum);
+        if(foundAlbum.isPresent()) {
+            Album album = foundAlbum.get();
+            if(imageFile != null) {
+                String url = imageService.uploadImage(imageFile);
+                album.setImage(url);
+            }
+            album.setName(albumName.replace("\"", ""));
+            albumService.saveAlbum(album);
+            return ResponseEntity.ok(new ResponseMessage("Update Album Successfully!", true, false));
+        }
+        return ResponseEntity.ok(new ResponseMessage("Update Album Fail!", false, true));
     }
 
     @DeleteMapping("/album/{id}")
@@ -99,13 +120,17 @@ public class AlbumController {
     }
 
     @PostMapping("/album/upload")
-    public ResponseEntity<?> uploadAlbum(@RequestPart("image") MultipartFile image, @RequestPart("idArtist") Long idArtist, @RequestPart("albumName") String albumName, @RequestPart("listSong") String listSong) throws IOException {
+    public ResponseEntity<?> uploadAlbum(@RequestPart("image") @Nullable MultipartFile image, @RequestPart("idArtist") Long idArtist, @RequestPart("albumName") String albumName, @RequestPart("listSong") String listSong) throws IOException {
         Album album = new Album();
         albumName = albumName.replace("\"", "");
         album.setName(albumName);
         album.setUser(userService.getUserById(idArtist).get());
-        String imageUrl = imageService.uploadImage(image);
-        album.setImage(imageUrl);
+        if(image != null) {
+            String imageUrl = imageService.uploadImage(image);
+            album.setImage(imageUrl);
+        } else {
+            album.setImage("https://th.bing.com/th/id/OIP.Oe_qiCnbrDmKmvNa4CxX4gHaGC?rs=1&pid=ImgDetMain");
+        }
         album.setDayCreated(LocalDateTime.now());
         Album savedAlbum = albumService.saveAlbum(album);
 

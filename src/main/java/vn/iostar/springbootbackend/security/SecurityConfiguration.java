@@ -3,6 +3,7 @@ package vn.iostar.springbootbackend.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.security.jwt.JWTAuthenticationFilter;
 
 @Configuration
@@ -35,8 +37,11 @@ public class SecurityConfiguration {
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/user/forgot-password").permitAll()
-                .antMatchers("/api/v1/user/**").permitAll()
-                .anyRequest().permitAll()
+                .antMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.PATCH, "/api/v1/user/").hasRole(Role.ADMIN.name())
+                .antMatchers("/api/v1/artist/**").hasRole(Role.ARTIST.name())
+                .antMatchers("/api/v1/artists/**").hasRole(Role.ARTIST.name())
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
