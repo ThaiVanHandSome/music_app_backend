@@ -28,8 +28,8 @@ public class ArtistSongService {
         return artistSongRepository.findArtistBySongId(idSong);
     }
 
-    public Page<Song> getSongsOfArtistDesc(Long idArtist, Pageable pageable) {
-        return artistSongRepository.findSongsByArtistIdOrderByViewCountDesc(idArtist, pageable);
+    public List<Song> getSongsOfArtistDesc(Long idArtist) {
+        return artistSongRepository.findSongsByArtistIdOrderByViewCountDesc(idArtist);
     }
 
     public int countSongsByArtistId(Long idArtist) {

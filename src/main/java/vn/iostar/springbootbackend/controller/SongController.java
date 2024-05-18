@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -138,7 +139,7 @@ public class SongController {
     }
 
     @PostMapping("/song/upload")
-    public ResponseEntity<?> uploadSong(@RequestPart("imageFile") MultipartFile imageFile,
+    public ResponseEntity<?> uploadSong(@RequestPart("imageFile") @Nullable MultipartFile imageFile,
                                         @RequestPart("idArtist") Long idArtist,
                                         @RequestPart("name") String name,
                                         @RequestPart("idSongCategory") Long idSongCategory,
@@ -146,12 +147,16 @@ public class SongController {
                                         @RequestPart("resourceFile") MultipartFile resourceFile) throws IOException {
         System.out.println(imageFile.getSize() + " " + imageFile.getOriginalFilename());
         System.out.println(resourceFile.getSize() + " " + resourceFile.getOriginalFilename());
-        String image = imageService.uploadImage(imageFile);
         String resource = songService.uploadAudio(resourceFile);
         name = name.replace("\"", "");
         Song song = new Song();
         song.setName(name);
-        song.setImage(image);
+        if(imageFile != null) {
+            String image = imageService.uploadImage(imageFile);
+            song.setImage(image);
+        } else {
+            song.setImage("https://100pilabs.com/images/default_music_player_icon_512.png");
+        }
         song.setResource(resource);
         song.setDayCreated(LocalDateTime.now());
         Optional<Album> album = albumService.getAlbumById(idAlbum);
@@ -172,5 +177,21 @@ public class SongController {
         songModel.setArtistName(artist.getNickname());
         Response res = new Response(true, false, "Uploaded Successfully!", songModel);
         return ResponseEntity.ok(res);
+    }
+
+    @PatchMapping("/song/update")
+    public ResponseEntity<?> updateSong(@RequestPart("idSong") Long idSong, @RequestPart("imageFile") @Nullable MultipartFile imageFile, @RequestPart("songName") String songName) throws IOException {
+        Optional<Song> optFoundSong = songService.getSongById(idSong);
+        if(optFoundSong.isPresent()) {
+            Song foundSong = optFoundSong.get();
+            if(imageFile != null) {
+                String imageUrl = imageService.uploadImage(imageFile);
+                foundSong.setImage(imageUrl);
+            }
+            foundSong.setName(songName.replace("\"", ""));
+            songService.saveSong(foundSong);
+            return ResponseEntity.ok(new ResponseMessage("Update Song Successfully!", true, false));
+        }
+        return ResponseEntity.ok(new ResponseMessage("Update Song Fail!", false, true));
     }
 }
