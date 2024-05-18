@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.PlaylistModel;
+import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.ImageService;
@@ -145,6 +146,28 @@ public class UserController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PatchMapping("/artist/update")
+    public ResponseEntity<?> updateArtist(@RequestPart("idArtist") Long idArtist, @RequestPart("imageFile") MultipartFile imageFile, @RequestPart("nickname") String nickname, @RequestPart("gender") int gender) throws IOException {
+        String imageUrl = imageService.uploadImage(imageFile);
+        Optional<User> optUser = userService.findByIdUser(idArtist);
+        nickname = nickname.replace("\"", "");
+        if(optUser.isPresent()) {
+            User user = optUser.get();
+            user.setNickname(nickname);
+            user.setGender(gender);
+            user.setAvatar(imageUrl);
+            userService.save(user);
+            Response res = new Response();
+            res.setSuccess(true);
+            res.setMessage("Update Success!");
+            res.setError(false);
+            res.setData(user);
+            return ResponseEntity.ok(res);
+        }
+        Response response = new Response(false, true, "Update Fail!", null);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/user/{idUser}/change-password")

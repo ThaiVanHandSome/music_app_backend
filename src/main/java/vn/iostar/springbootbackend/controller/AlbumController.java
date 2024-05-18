@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.model.ResponseMessage;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
 import vn.iostar.springbootbackend.service.ImageService;
@@ -55,12 +57,32 @@ public class AlbumController {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can not find album with id: " + id);
     }
+
+    @DeleteMapping("/album/{id}")
+    public ResponseEntity<?> deleteAlbum(@PathVariable("id") Long id) {
+        Optional<Album> foundAlbum = albumService.getAlbumById(id);
+        if (foundAlbum.isPresent()) {
+            albumService.deleteAlbum(foundAlbum.get());
+            ResponseMessage responseMessage = new ResponseMessage("Delete Successfully!", true, false);
+            return ResponseEntity.ok(responseMessage);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can not find album with id: " + id);
+    }
+
     @GetMapping("/album/{id}/songs")
     public ResponseEntity<?> getSongByAlbumId(@PathVariable("id") Long id) {
         Optional<Album> optAlbum = albumService.getAlbumById(id);
         if(optAlbum.isPresent()) {
             List<Song> songs = songService.getSongByAlbum(optAlbum.get());
-            Response res = new Response(true, false, "Get Songs Of Album Successfully!", songs);
+            List<SongModel> songModels = new ArrayList<>();
+            for(Song song : songs) {
+                SongModel songModel = new SongModel();
+                BeanUtils.copyProperties(song, songModel);
+                songModel.setCntComments(song.getSongComments().size());
+                songModel.setCntLikes(song.getSongLikeds().size());
+                songModels.add(songModel);
+            }
+            Response res = new Response(true, false, "Get Songs Of Album Successfully!", songModels);
             return ResponseEntity.ok(res);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find album");
@@ -79,6 +101,7 @@ public class AlbumController {
     @PostMapping("/album/upload")
     public ResponseEntity<?> uploadAlbum(@RequestPart("image") MultipartFile image, @RequestPart("idArtist") Long idArtist, @RequestPart("albumName") String albumName, @RequestPart("listSong") String listSong) throws IOException {
         Album album = new Album();
+        albumName = albumName.replace("\"", "");
         album.setName(albumName);
         album.setUser(userService.getUserById(idArtist).get());
         String imageUrl = imageService.uploadImage(image);

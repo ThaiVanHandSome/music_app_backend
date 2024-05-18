@@ -37,4 +37,8 @@ public class AlbumService {
     public int countAlbumsByArtistId(Long idArtist) {
         return albumRepository.countAlbumsByArtistId(idArtist);
     }
+
+    public void deleteAlbum(Album album) {
+        albumRepository.delete(album);
+    }
 }
