@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Album;
-import vn.iostar.springbootbackend.entity.ArtistSong;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongRepository;
@@ -33,7 +32,7 @@ public class SongService {
 
     public List<SongModel> getAllSongs() {
         List<Song> songs = songRepository.findAll();
-        return convertToSongModel(songs);
+        return convertToSongModelList(songs);
     }
 
     public void saveSong(Song song) {
@@ -64,13 +63,22 @@ public class SongService {
         return  songRepository.findById(id);
     }
 
-    public Page<Song> getSongsByMostViews(Pageable pageable) { return songRepository.findByOrderByViewsDesc(pageable); };
+    public Page<SongModel> getSongsByMostViews(Pageable pageable) {
+        Page<Song> songs = songRepository.findByOrderByViewsDesc(pageable);
+        return songs.map(this::convertToSongModel);
+    }
 
-    public Page<Song> getSongsByMostLikes(Pageable pageable) { return songRepository.findSongsByMostLikes(pageable); };
+    public Page<SongModel> getSongsByMostLikes(Pageable pageable) {
+        Page<Song> songs = songRepository.findSongsByMostLikes(pageable);
+        return songs.map(this::convertToSongModel);
+    }
 
-    public Page<Song> getSongsByDayCreated(Pageable pageable) { return songRepository.findByOrderByDayCreatedDesc(pageable); };
+    public Page<SongModel> getSongsByDayCreated(Pageable pageable) {
+        Page<Song> songs = songRepository.findByOrderByDayCreatedDesc(pageable);
+        return songs.map(this::convertToSongModel);
+    }
 
-    public List<SongModel> convertToSongModel(List<Song> songs) {
+    public List<SongModel> convertToSongModelList(List<Song> songs) {
         List<SongModel> songModels = new ArrayList<>();
         for (Song song : songs) {
             SongModel songModel = new SongModel();
@@ -85,6 +93,19 @@ public class SongService {
             songModels.add(songModel);
         }
         return songModels;
+    }
+
+    public SongModel convertToSongModel(Song song) {
+        SongModel songModel = new SongModel();
+        songModel.setIdSong(song.getIdSong());
+        songModel.setName(song.getName());
+        songModel.setViews(song.getViews());
+        songModel.setDayCreated(song.getDayCreated());
+        songModel.setResource(song.getResource());
+        songModel.setImage(song.getImage());
+        songModel.setArtistId(song.getArtistSongs().get(0).getArtist().getIdUser());
+        songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getNickname());
+        return songModel;
     }
 
     public long countSongs() {

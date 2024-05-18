@@ -25,7 +25,7 @@ public class PlaylistSongService {
 
     public List<SongModel> findAllByPlaylistSongId(Long id_playlist) {
         List<Song> songs = playlistSongRepository.findAllByPlaylistSongId(id_playlist);
-        return songService.convertToSongModel(songs);
+        return songService.convertToSongModelList(songs);
     }
 
     public int deleteByPlaylistSongId(Long id_playlist, Long id_song) {
