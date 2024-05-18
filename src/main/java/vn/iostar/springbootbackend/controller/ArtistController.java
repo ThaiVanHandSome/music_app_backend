@@ -84,8 +84,8 @@ public class ArtistController {
     }
 
     @GetMapping("/artist/{idArtist}/songs/desc")
-    public ResponseEntity<?> getSongsOfArtistDesc(@PathVariable("idArtist") Long idArtist, Pageable pageable) {
-        Page<Song> songs = artistSongService.getSongsOfArtistDesc(idArtist, pageable);
+    public ResponseEntity<?> getSongsOfArtistDesc(@PathVariable("idArtist") Long idArtist) {
+        List<Song> songs = artistSongService.getSongsOfArtistDesc(idArtist);
         Response response = new Response();
         response.setData(songs);
         response.setMessage("Get Songs Of Artist Successfully!");
