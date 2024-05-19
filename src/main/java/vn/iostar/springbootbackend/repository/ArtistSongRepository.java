@@ -22,7 +22,7 @@ public interface ArtistSongRepository extends JpaRepository<ArtistSong, ArtistSo
     List<User> findArtistBySongId(Long id_song);
 
     @Query("SELECT a.song FROM ArtistSong a WHERE a.artist.idUser = :artistId ORDER BY a.song.views DESC")
-    Page<Song> findSongsByArtistIdOrderByViewCountDesc(Long artistId, Pageable pageable);
+    List<Song> findSongsByArtistIdOrderByViewCountDesc(Long artistId);
 
     @Query("SELECT COUNT(s.song) FROM ArtistSong s WHERE s.artistSongId.idArtist = ?1")
     int countSongsByArtistId(Long id_artist);

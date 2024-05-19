@@ -25,7 +25,7 @@ public class PlaylistSongService {
 
     public List<SongModel> findAllByPlaylistSongId(Long id_playlist) {
         List<Song> songs = playlistSongRepository.findAllByPlaylistSongId(id_playlist);
-        return songService.convertToSongModel(songs);
+        return songService.convertToSongModelList(songs);
     }
 
     public int deleteByPlaylistSongId(Long id_playlist, Long id_song) {
@@ -61,5 +61,9 @@ public class PlaylistSongService {
 
     public boolean isSongExistsInPlaylist(Long id_playlist, Long idSong) {
         return playlistSongRepository.isSongExistsInPlaylist(id_playlist, idSong);
+    }
+
+    public int countSongsByPlaylistId(Long id_playlist) {
+        return playlistSongRepository.countSongsByPlaylistId(id_playlist);
     }
 }

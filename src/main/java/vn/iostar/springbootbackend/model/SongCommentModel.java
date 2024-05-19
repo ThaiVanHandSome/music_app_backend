@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.iostar.springbootbackend.entity.User;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class SongCommentModel {
     private String content;
     private int likes;
     private User user;
+    private LocalDateTime dayCommented;
 }
