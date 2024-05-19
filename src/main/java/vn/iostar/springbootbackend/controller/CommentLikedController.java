@@ -28,5 +28,12 @@ public class CommentLikedController {
         Response res = new Response(true, false, "Successfully!", isLiked);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/song/comment/countLikes")
+    public ResponseEntity<?> countLikesByCommentId(@RequestParam("comment_id") Long commentId) {
+        int countLikes = commentLikedService.countLikesByCommentId(commentId);
+        Response res = new Response(true, false, "Successfully!", countLikes);
+        return ResponseEntity.ok(res);
+    }
 }
 

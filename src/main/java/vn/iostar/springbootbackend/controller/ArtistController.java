@@ -1,16 +1,26 @@
 package vn.iostar.springbootbackend.controller;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.entity.Album;
+import vn.iostar.springbootbackend.entity.Role;
+import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.AlbumModel;
+import vn.iostar.springbootbackend.repository.FollowArtistRepository;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.AlbumService;
+import vn.iostar.springbootbackend.service.ArtistSongService;
+import vn.iostar.springbootbackend.service.SongService;
 import vn.iostar.springbootbackend.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +32,18 @@ public class ArtistController {
 
     @Autowired
     AlbumService albumService;
+
+    @Autowired
+    ArtistSongService artistSongService;
+
+    @GetMapping("/artists")
+    public ResponseEntity<?> getAllArtists(Pageable pageable) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ARTIST);
+        Page<User> artists = userService.findByRoles(roles, pageable);
+        Response res = new Response(true, false, "Get Songs By Most Likes Successfully!", artists);
+        return ResponseEntity.ok(res);
+    }
 
     @GetMapping("/artist/{id}")
     public ResponseEntity<?> getArtistById(@PathVariable("id") Long id) {
@@ -38,7 +60,14 @@ public class ArtistController {
         Optional<User> foundArtist = userService.findByIdUser(idArtist);
         if (foundArtist.isPresent()) {
             List<Album> albums = albumService.getAlbumByIdArtist(idArtist);
-            Response res = new Response(true, false, "Get Albums Of Artist Successfully!", albums);
+            List<AlbumModel> albumModels = new ArrayList<>();
+            for (Album album : albums) {
+                AlbumModel albumModel = new AlbumModel();
+                BeanUtils.copyProperties(album, albumModel);
+                albumModel.setCntSong(album.getSongs().size());
+                albumModels.add(albumModel);
+            }
+            Response res = new Response(true, false, "Get Albums Of Artist Successfully!", albumModels);
             return ResponseEntity.ok(res);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can not find albums of this artist");
@@ -53,4 +82,27 @@ public class ArtistController {
         Response res = new Response(true, false, "Search Successfully!", foundArtists);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/artist/{idArtist}/songs/desc")
+    public ResponseEntity<?> getSongsOfArtistDesc(@PathVariable("idArtist") Long idArtist) {
+        List<Song> songs = artistSongService.getSongsOfArtistDesc(idArtist);
+        Response response = new Response();
+        response.setData(songs);
+        response.setMessage("Get Songs Of Artist Successfully!");
+        response.setError(false);
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/artist/{idArtist}/followers")
+    public ResponseEntity<?> getAllFollowers(@PathVariable("idArtist") Long idArtist){
+        List<Long> ids = userService.getAllFollowers(idArtist);
+        Response res = new Response();
+        res.setError(false);
+        res.setSuccess(true);
+        res.setMessage("Get All Users Successfully!");
+        res.setData(ids);
+        return ResponseEntity.ok(res);
+    }
+
 }

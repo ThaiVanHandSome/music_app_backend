@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "songs")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Song implements Serializable {
 
     @Id
@@ -37,7 +38,6 @@ public class Song implements Serializable {
 
     @Column(name = "image", nullable = false, columnDefinition = "varchar(1000)")
     private String image;
-
 
     @JsonIgnoreProperties("songs")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.iostar.springbootbackend.service.PlaylistService;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1")
 public class PlaylistController {
@@ -37,8 +39,33 @@ public class PlaylistController {
     public ResponseEntity<?> getPlaylistById(@PathVariable Long id_playlist) {
         Playlist playlist = playlistService.getPlaylistById(id_playlist).orElseThrow();
         playlistService.setPlaylistImageByFirstSongImage(id_playlist);
+        playlistService.sortPlaylistSongsByDayAdded(playlist);
         PlaylistModel playlistModel = playlistService.convertToPlaylistModel(playlist);
         Response response = new Response(true, false,"Playlist found", playlistModel);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/playlist")
+    public ResponseEntity<?> isPlaylistNameExists(@RequestParam String name) {
+        boolean isExists = playlistService.isPlaylistNameExists(name);
+        Response response = new Response(true, false,"Successfully!", isExists);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/playlist/{id_playlist}")
+    public ResponseEntity<?> updatePlaylistNameById(@PathVariable Long id_playlist, @RequestParam String name) {
+        Optional<Playlist> playlist = playlistService.getPlaylistById(id_playlist);
+        if (playlist.isPresent()) {
+            playlist.get().setName(name);
+            boolean isExists = playlistService.isPlaylistNameExists(playlist.get().getName());
+            if (!isExists) {
+                playlistService.savePlaylist(playlist.get());
+            } else {
+                Response response = new Response(true, false, "Playlist name already exists", false);
+                return ResponseEntity.ok(response);
+            }
+        }
+        Response response = new Response(true, false, "Playlist updated", playlist.isPresent());
         return ResponseEntity.ok(response);
     }
 

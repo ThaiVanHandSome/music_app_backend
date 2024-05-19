@@ -2,6 +2,7 @@ package vn.iostar.springbootbackend.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongRepository;
 
@@ -32,8 +35,13 @@ public class SongService {
 
     public List<SongModel> getAllSongs() {
         List<Song> songs = songRepository.findAll();
-        return convertToSongModel(songs);
+        return convertToSongModelList(songs);
     }
+
+    public void saveSong(Song song) {
+        songRepository.save(song);
+    }
+
     public Optional<Song> getSongById(Long id) {
         return songRepository.findById(id);
     }
@@ -46,8 +54,19 @@ public class SongService {
         return songRepository.findByAlbum(album);
     }
 
-    public List<Song> getSongsByKeyWord(String keyword) {
-        return songRepository.findByNameContaining(keyword);
+    public List<SongModel> getSongsByKeyWord(String keyword) {
+        List<Song> songs = songRepository.findByNameContaining(keyword);
+        if (!songs.isEmpty()) {
+            List<SongModel> songModels = new ArrayList<>();
+            for (Song song : songs) {
+                SongModel songModel = new SongModel();
+                BeanUtils.copyProperties(song, songModel);
+                songModels.add(songModel);
+            }
+            return songModels;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public void increaseViewOfSong(Long id) {
@@ -58,13 +77,22 @@ public class SongService {
         return  songRepository.findById(id);
     }
 
-    public Page<Song> getSongsByMostViews(Pageable pageable) { return songRepository.findByOrderByViewsDesc(pageable); };
+    public Page<SongModel> getSongsByMostViews(Pageable pageable) {
+        Page<Song> songs = songRepository.findByOrderByViewsDesc(pageable);
+        return songs.map(this::convertToSongModel);
+    }
 
-    public Page<Song> getSongsByMostLikes(Pageable pageable) { return songRepository.findSongsByMostLikes(pageable); };
+    public Page<SongModel> getSongsByMostLikes(Pageable pageable) {
+        Page<Song> songs = songRepository.findSongsByMostLikes(pageable);
+        return songs.map(this::convertToSongModel);
+    }
 
-    public Page<Song> getSongsByDayCreated(Pageable pageable) { return songRepository.findByOrderByDayCreatedDesc(pageable); };
+    public Page<SongModel> getSongsByDayCreated(Pageable pageable) {
+        Page<Song> songs = songRepository.findByOrderByDayCreatedDesc(pageable);
+        return songs.map(this::convertToSongModel);
+    }
 
-    public List<SongModel> convertToSongModel(List<Song> songs) {
+    public List<SongModel> convertToSongModelList(List<Song> songs) {
         List<SongModel> songModels = new ArrayList<>();
         for (Song song : songs) {
             SongModel songModel = new SongModel();
@@ -81,6 +109,19 @@ public class SongService {
         return songModels;
     }
 
+    public SongModel convertToSongModel(Song song) {
+        SongModel songModel = new SongModel();
+        songModel.setIdSong(song.getIdSong());
+        songModel.setName(song.getName());
+        songModel.setViews(song.getViews());
+        songModel.setDayCreated(song.getDayCreated());
+        songModel.setResource(song.getResource());
+        songModel.setImage(song.getImage());
+        songModel.setArtistId(song.getArtistSongs().get(0).getArtist().getIdUser());
+        songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getNickname());
+        return songModel;
+    }
+
     public long countSongs() {
         return songRepository.count();
     }
@@ -88,5 +129,24 @@ public class SongService {
     public String uploadAudio(MultipartFile audioFile) throws IOException {
         Map<?, ?> result = cloudinary.uploader().upload(audioFile.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
         return (String) result.get("url");
+    }
+
+    public void deleteSong(Song song) {
+        songRepository.delete(song);
+    }
+
+    public List<SongModel> searchSong(String query){
+        List<Song> songs = songRepository.searchSong(query);
+        if (!songs.isEmpty()) {
+            List<SongModel> songModels = new ArrayList<>();
+            for (Song song : songs) {
+                SongModel songModel = new SongModel();
+                BeanUtils.copyProperties(song, songModel);
+                songModels.add(songModel);
+            }
+            return songModels;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

@@ -79,12 +79,12 @@ public class SongLikedService {
 
     public List<SongModel> getLikedSongsByIdUser(Long idUser) {
         List<Song> songs = songLikedRepository.getLikedSongsByIdUser(idUser);
-        return songService.convertToSongModel(songs);
+        return songService.convertToSongModelList(songs);
     }
 
     public List<SongModel> getNotLikedSongsByIdUser(Long idUser) {
         List<Song> songs = songLikedRepository.getNotLikedSongsByIdUser(idUser);
-        return songService.convertToSongModel(songs);
+        return songService.convertToSongModelList(songs);
     }
 
     public void addSongToFavourite(SongLikedRequest requestBody) {

@@ -32,13 +32,13 @@ import java.util.Optional;
 @EnableConfigurationProperties
 public class SpringbootBackendApplication {
 
+	private final PasswordEncoder passwordEncoder;
+
 	@Autowired
 	private TwilioConfig twilioConfig;
 
 	@Autowired
-	UserService userService;
-
-	private final PasswordEncoder passwordEncoder;
+	private UserService userService;
 
 	public SpringbootBackendApplication(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
@@ -58,7 +58,7 @@ public class SpringbootBackendApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry
 						.addMapping("/**")
-						.allowedOrigins("http://localhost:3000", "http://10.0.2.2:8989", "http://192.168.1.245:8989")
+						.allowedOrigins("http://localhost:3000", "http://10.0.2.2:8989", "http://192.168.52.28:8989")
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
 						.allowCredentials(true);;
 			}

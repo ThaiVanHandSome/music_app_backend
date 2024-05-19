@@ -16,6 +16,6 @@ public class SongUpload {
     private MultipartFile imageFile;
     private String name;
     private MultipartFile resourceFile;
-//    private Long idAlbum;
-//    private Long idSongCategory;
+    private Long idAlbum;
+    private Long idSongCategory;
 }

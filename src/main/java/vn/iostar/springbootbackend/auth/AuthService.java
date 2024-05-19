@@ -67,7 +67,7 @@ public class AuthService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .phoneNumber(request.getPhoneNumber())
-                    .avatar(request.getAvatar())
+                    .avatar("https://th.bing.com/th/id/OIP.bWllJuCbia6Vbt18CzJWQQHaHY?w=1005&h=1002&rs=1&pid=ImgDetMain")
                     .role(Role.USER)
                     .provider(Provider.DATABASE)
                     .isActive(false)
@@ -115,6 +115,9 @@ public class AuthService {
             return AuthenticationResponse.builder().error(true).type("wrong").message("Email or Password wrong!").success(false).build();
         }
         User user = opt.get();
+        if(user.getProvider() == Provider.GOOGLE) {
+            return AuthenticationResponse.builder().error(true).type("wrong").message("Email or Password wrong!").success(false).build();
+        }
         if(!user.isActive()) {
             return AuthenticationResponse.builder()
                     .error(true)
@@ -133,6 +136,7 @@ public class AuthService {
                 .accessToken(jwtToken)
                 .refreshToken(jwtRefreshToken.getToken())
                 .id(user.getIdUser())
+                .nickname(user.getNickname())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
@@ -168,7 +172,7 @@ public class AuthService {
             if(type.equals("confirm")) {
                 userService.enableUser(confirmationToken.getUser().getEmail());
             }
-            return OtpResponse.builder().message("Successfully! Confirmed!").type(type).error(false).success(true).build();
+            return OtpResponse.builder().message("Successfully! Confirmed!").id(confirmationToken.getUser().getIdUser()).type(type).error(false).success(true).build();
         }
         return OtpResponse.builder().message("Token Not Valid!").error(true).success(false).build();
     }

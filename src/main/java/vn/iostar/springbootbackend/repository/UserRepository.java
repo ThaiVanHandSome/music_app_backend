@@ -1,10 +1,13 @@
 package vn.iostar.springbootbackend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.ArtistModel;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -26,9 +29,15 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("SELECT u FROM User u WHERE u.role IN :roles")
     List<User> findByRoles(List<Role> roles);
 
+    @Query("SELECT u FROM User u WHERE u.role IN :roles")
+    Page<User> findByRoles(List<Role> roles, Pageable pageable);
+
     @Override
     long count();
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.role = 'ARTIST'")
     long countArtists();
+    @Query("SELECT u FROM User u WHERE u.nickname LIKE %:query% AND u.role = 'ARTIST'")
+    List<User> searchArtist(String query);
+
 }

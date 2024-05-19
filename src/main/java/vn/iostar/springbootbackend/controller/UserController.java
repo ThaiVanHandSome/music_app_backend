@@ -2,22 +2,25 @@ package vn.iostar.springbootbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.model.PlaylistModel;
+import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
-import vn.iostar.springbootbackend.service.ImageService;
-import vn.iostar.springbootbackend.service.PlaylistService;
-import vn.iostar.springbootbackend.service.SongLikedService;
-import vn.iostar.springbootbackend.service.UserService;
+import vn.iostar.springbootbackend.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,20 +28,22 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
-    Logger logger
-            = LoggerFactory.getLogger(UserController.class);
-    //    private static final Logger logger = Logger.getLogger(MyClass.class);
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private ImageService imageService;
-  
+
     @Autowired
     private PlaylistService playlistService;
 
+
     @Autowired
     private SongLikedService songLikedService;
+
+    @Autowired
+    private FollowArtistService followArtistService;
 
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
@@ -102,29 +107,53 @@ public class UserController {
         res.setData(userService.getUserByEmail(email));
         return ResponseEntity.ok(res);
     }
-  
-    @PatchMapping("/user/{idUser}")
-    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, String> reqBody,@RequestPart("imageFile") MultipartFile imageFile) {
-        try {
-            String imageUrl = imageService.uploadImage(imageFile);
-            String firstName = reqBody.get("firstName");
-            String lastName = reqBody.get("lastName");
-            int gender = Integer.parseInt(reqBody.get("gender"));
-            Optional<User> user = userService.findByIdUser(idUser);
-            if(user.isEmpty()){
-                return (ResponseEntity<?>) ResponseEntity.notFound();
+
+    @PatchMapping("/user/update")
+    public ResponseEntity<?> updateUser(@RequestPart("idUser") Long idUser, @RequestPart("imageFile") @Nullable MultipartFile imageFile, @RequestPart("firstName") String firstName,@RequestPart("lastName") String lastName, @RequestPart("gender") int gender) throws IOException {
+        Optional<User> optUser = userService.findByIdUser(idUser);
+        if(optUser.isPresent()) {
+            User user = optUser.get();
+            user.setGender(gender);
+            user.setFirstName(firstName.replace("\"", ""));
+            user.setLastName(lastName.replace("\"", ""));
+            if(imageFile != null) {
+                String imageUrl = imageService.uploadImage(imageFile);
+                user.setAvatar(imageUrl);
             }
-            User userEntity = user.get();
-            userEntity.setAvatar(imageUrl);
-            userEntity.setFirstName(firstName);
-            userEntity.setLastName(lastName);
-            userEntity.setGender(gender);
-            userService.updateUserInformation(userEntity);
-            Response response = new Response(true, false, "Update Success!", user);
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            userService.save(user);
+            Response res = new Response();
+            res.setSuccess(true);
+            res.setMessage("Update Success!");
+            res.setError(false);
+            res.setData(user);
+            return ResponseEntity.ok(res);
         }
+        Response response = new Response(false, true, "Update Fail!", null);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/artist/update")
+    public ResponseEntity<?> updateArtist(@RequestPart("idArtist") Long idArtist, @RequestPart("imageFile") @Nullable MultipartFile imageFile, @RequestPart("nickname") String nickname, @RequestPart("gender") int gender) throws IOException {
+        Optional<User> optUser = userService.findByIdUser(idArtist);
+        nickname = nickname.replace("\"", "");
+        if(optUser.isPresent()) {
+            User user = optUser.get();
+            user.setNickname(nickname);
+            user.setGender(gender);
+            if(imageFile != null) {
+                String imageUrl = imageService.uploadImage(imageFile);
+                user.setAvatar(imageUrl);
+            }
+            userService.save(user);
+            Response res = new Response();
+            res.setSuccess(true);
+            res.setMessage("Update Success!");
+            res.setError(false);
+            res.setData(user);
+            return ResponseEntity.ok(res);
+        }
+        Response response = new Response(false, true, "Update Fail!", null);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/user/{idUser}/change-password")
@@ -158,6 +187,42 @@ public class UserController {
     public ResponseEntity<?> getNotLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
         List<SongModel> songs = songLikedService.getNotLikedSongsByIdUser(idUser);
         Response response = new Response(true, false, "Get Not Liked Songs Success!", songs);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/searchArtist")
+    public ResponseEntity<?> searchArtist(@RequestParam("query") String query) {
+        List<ArtistModel> artists = userService.searchArtist(query);
+        Response response = new Response(true, false, "Find artists Success", artists);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/{id_user}/is-followed-artist")
+    public ResponseEntity<?> isUserFollowedArtist(@PathVariable("id_user") Long idUser, @RequestParam("id_artist") Long idArtist) {
+        boolean isFollowed = followArtistService.existsByArtistIdAndUserId(idArtist, idUser);
+        Response response = new Response(true, false, "Check Successfully!", isFollowed);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/user/{id_user}/follow-artist")
+    public ResponseEntity<?> followArtist(@PathVariable("id_user") Long idUser, @RequestParam("id_artist") Long idArtist) {
+        if (followArtistService.existsByArtistIdAndUserId(idArtist, idUser)){
+            followArtistService.deleteFollowArtist(idArtist, idUser);
+            Response response = new Response(true, false, "Unfollow Artist Successfully!", false);
+            return ResponseEntity.ok(response);
+        }
+
+        Response response = new Response(false, true, "Follow Artist Failed!", false);
+        if (followArtistService.saveFollowArtist(idArtist, idUser) != null) {
+            response = new Response(true, false, "Follow Artist Successfully!", true);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/user/{idUser}")
+    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, Object> fields) {
+        User user = userService.updateUserByFields(idUser, fields);
+        Response response = new Response(true, false, "Update Success!", user);
         return ResponseEntity.ok(response);
     }
 }

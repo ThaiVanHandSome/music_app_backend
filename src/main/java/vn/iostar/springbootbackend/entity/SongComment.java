@@ -1,6 +1,7 @@
 package vn.iostar.springbootbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "song_comments")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class SongComment implements Serializable {
 
     @Id
