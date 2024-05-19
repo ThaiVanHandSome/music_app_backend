@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,4 +38,7 @@ public interface SongRepository extends JpaRepository<Song, Long> {
 
     @Override
     long count();
+
+    @Query("SELECT s FROM Song s WHERE s.name LIKE %:query%")
+    List<Song> searchSong(String query);
 }
