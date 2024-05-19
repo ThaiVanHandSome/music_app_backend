@@ -8,6 +8,7 @@ import vn.iostar.springbootbackend.entity.CommentLiked;
 import vn.iostar.springbootbackend.repository.CommentLikedRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class CommentLikedService {
@@ -42,5 +43,13 @@ public class CommentLikedService {
             commentLikedRepository.increaseLikesCount(id_comment);
 
         }
+    }
+
+    public int countLikesByCommentId(Long id_comment){
+        return commentLikedRepository.countLikesByCommentId(id_comment);
+    }
+
+    public List<CommentLiked> findByCommentLikedId_IdComment(Long id_comment) {
+        return commentLikedRepository.findByCommentLikedId_IdComment(id_comment);
     }
 }

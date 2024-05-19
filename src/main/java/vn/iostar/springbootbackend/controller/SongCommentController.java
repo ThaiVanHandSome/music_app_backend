@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import vn.iostar.springbootbackend.entity.CommentLiked;
 import vn.iostar.springbootbackend.entity.SongComment;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
@@ -13,6 +14,7 @@ import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongCommentModel;
 import vn.iostar.springbootbackend.model.SongCommentRequest;
 import vn.iostar.springbootbackend.response.Response;
+import vn.iostar.springbootbackend.service.CommentLikedService;
 import vn.iostar.springbootbackend.service.SongCommentService;
 import vn.iostar.springbootbackend.service.SongService;
 import vn.iostar.springbootbackend.service.UserService;
@@ -29,6 +31,9 @@ public class SongCommentController {
     private SongCommentService songCommentService;
 
     @Autowired
+    private CommentLikedService commentLikedService;
+
+    @Autowired
     private SongService songService;
 
     @Autowired
@@ -41,9 +46,16 @@ public class SongCommentController {
         List<SongComment> comments = songCommentService.findAllComentsBySong(song);
         List<SongCommentModel> commentModels = new ArrayList<>();
         for (SongComment comment : comments) {
+            List<CommentLiked> commentLikeds = commentLikedService.findByCommentLikedId_IdComment(comment.getIdComment());
+            List<Long> listUserLike = new ArrayList<>();
+            for (CommentLiked cmtliked : commentLikeds) {
+                listUserLike.add(cmtliked.getUser().getIdUser());
+            }
+            comment.setLikes(commentLikedService.countLikesByCommentId(comment.getIdComment().longValue()));
             SongCommentModel commentModel = new SongCommentModel();
             BeanUtils.copyProperties(comment, commentModel);
             commentModel.setUser(comment.getUser());
+            commentModel.setListUserLike(listUserLike);
             commentModels.add(commentModel);
         }
         Response res = new Response(true, false, "Get Comments Of Song Successfully!", commentModels);

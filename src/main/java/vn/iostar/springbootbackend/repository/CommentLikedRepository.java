@@ -19,6 +19,9 @@ public interface CommentLikedRepository extends JpaRepository<CommentLiked, Comm
     @Query("SELECT COUNT(likes) FROM CommentLiked likes WHERE likes.commentLikedId.idComment = ?1 AND likes.commentLikedId.idUser = ?2")
     Long countLikesByCommentIdAndUserId(Long id_comment, Long id_user);
 
+    @Query("SELECT COUNT(likes) FROM CommentLiked likes WHERE likes.commentLikedId.idComment = ?1")
+    int countLikesByCommentId(Long id_comment);
+
     default boolean isUserLikedComment(Long id_comment, Long id_user) {
         return countLikesByCommentIdAndUserId(id_comment, id_user) > 0;
     }
@@ -34,4 +37,6 @@ public interface CommentLikedRepository extends JpaRepository<CommentLiked, Comm
     @Modifying
     @Query("UPDATE SongComment cmt SET cmt.likes = cmt.likes + 1 WHERE cmt.idComment = :commentId")
     void decreaseViewCount(Long commentId);
+
+    List<CommentLiked> findByCommentLikedId_IdComment(Long id_comment);
 }
