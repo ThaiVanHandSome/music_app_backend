@@ -58,8 +58,9 @@ public class SpringbootBackendApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry
 						.addMapping("/**")
-						.allowedOrigins("http://localhost:3000", "http://10.0.2.2:8989", "http://192.168.52.28:8989")
-						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+						.allowedOrigins("http://localhost:3000", "http://10.0.2.2:8989", "http://192.168.1.2:8989")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+						.allowedHeaders("*")
 						.allowCredentials(true);;
 			}
 		};
