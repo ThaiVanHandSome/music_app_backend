@@ -211,9 +211,11 @@ public class UserController {
     }
 
     @GetMapping("/user/searchArtist")
-    public ResponseEntity<?> searchArtist(@RequestParam("query") String query){
+    public ResponseEntity<?> searchArtist(@RequestParam("query") String query) {
         List<ArtistModel> artists = userService.searchArtist(query);
         Response response = new Response(true, false, "Find artists Success", artists);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/user/{id_user}/is-followed-artist")
     public ResponseEntity<?> isUserFollowedArtist(@PathVariable("id_user") Long idUser, @RequestParam("id_artist") Long idArtist) {
