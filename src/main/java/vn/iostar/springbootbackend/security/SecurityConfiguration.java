@@ -23,6 +23,9 @@ public class SecurityConfiguration {
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/swagger-ui/**" };
 
+    private static final String[] ARTIST_WHITELIST = {
+            "/api/v1/album/update", "/api/v1/album/upload", "/api/v1/song/update", "/api/v1/song/upload"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,7 +42,8 @@ public class SecurityConfiguration {
                 .antMatchers("/api/v1/user/forgot-password").permitAll()
                 .antMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers(HttpMethod.PATCH, "/api/v1/user/").hasRole(Role.ADMIN.name())
-                .antMatchers("/api/v1/artist/**").hasRole(Role.ARTIST.name())
+                .antMatchers(ARTIST_WHITELIST).hasRole(Role.ARTIST.name())
+                .antMatchers("/api/v1/artist/**").hasAnyRole(Role.ARTIST.name(), Role.USER.name())
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
