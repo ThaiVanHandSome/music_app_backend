@@ -1,5 +1,6 @@
 package vn.iostar.springbootbackend.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,16 +10,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import vn.iostar.springbootbackend.auth.registration.RegisterResponse;
+import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.AlbumModel;
+import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.repository.FollowArtistRepository;
 import vn.iostar.springbootbackend.repository.UserRepository;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -152,4 +153,18 @@ public class UserService implements UserDetailsService {
         return followArtistRepository.findUserIdsByArtistId(id);
     }
 
+    public List<ArtistModel> searchArtist(String query) {
+        List<User> artists = userRepository.searchArtist(query);
+        if (!artists.isEmpty()) {
+            List<ArtistModel> artistModels = new ArrayList<>();
+            for (User artist : artists) {
+                ArtistModel artistModel = new ArtistModel();
+                BeanUtils.copyProperties(artist, artistModel);
+                artistModels.add(artistModel);
+            }
+            return artistModels;
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }
