@@ -108,48 +108,28 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/user/upload")
-    public ResponseEntity<?> uploadAvatar(@RequestPart("imageFile") @Nullable MultipartFile imageFile, @RequestPart Long idUser) {
-        try {
-            Optional<User> user = userService.findByIdUser(idUser);
-            if (user.isEmpty() || !Objects.equals(user.get().getIdUser(), idUser)) {
-                return (ResponseEntity<?>) ResponseEntity.notFound();
-            }
-            User userEntity = user.get();
+    @PatchMapping("/user/update")
+    public ResponseEntity<?> updateUser(@RequestPart("idUser") Long idUser, @RequestPart("imageFile") @Nullable MultipartFile imageFile, @RequestPart("firstName") String firstName,@RequestPart("lastName") String lastName, @RequestPart("gender") int gender) throws IOException {
+        Optional<User> optUser = userService.findByIdUser(idUser);
+        if(optUser.isPresent()) {
+            User user = optUser.get();
+            user.setGender(gender);
+            user.setFirstName(firstName.replace("\"", ""));
+            user.setLastName(lastName.replace("\"", ""));
             if(imageFile != null) {
                 String imageUrl = imageService.uploadImage(imageFile);
-                userEntity.setAvatar(imageUrl);
+                user.setAvatar(imageUrl);
             }
-            userService.updateUserInformation(userEntity);
-            Response response = new Response(true, false, "Update Success!", user);
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            userService.save(user);
+            Response res = new Response();
+            res.setSuccess(true);
+            res.setMessage("Update Success!");
+            res.setError(false);
+            res.setData(user);
+            return ResponseEntity.ok(res);
         }
-    }
-
-    @PatchMapping("/user/{idUser}")
-    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, String> reqBody,@RequestPart("imageFile") MultipartFile imageFile) {
-        try {
-            String imageUrl = imageService.uploadImage(imageFile);
-            String firstName = reqBody.get("firstName");
-            String lastName = reqBody.get("lastName");
-            int gender = Integer.parseInt(reqBody.get("gender"));
-            Optional<User> user = userService.findByIdUser(idUser);
-            if(user.isEmpty()){
-                return (ResponseEntity<?>) ResponseEntity.notFound();
-            }
-            User userEntity = user.get();
-            userEntity.setAvatar(imageUrl);
-            userEntity.setFirstName(firstName);
-            userEntity.setLastName(lastName);
-            userEntity.setGender(gender);
-            userService.updateUserInformation(userEntity);
-            Response response = new Response(true, false, "Update Success!", userEntity);
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Response response = new Response(false, true, "Update Fail!", null);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/artist/update")
