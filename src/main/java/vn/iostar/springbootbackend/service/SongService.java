@@ -2,6 +2,7 @@ package vn.iostar.springbootbackend.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Album;
 import vn.iostar.springbootbackend.entity.ArtistSong;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongRepository;
 
@@ -52,8 +55,19 @@ public class SongService {
         return songRepository.findByAlbum(album);
     }
 
-    public List<Song> getSongsByKeyWord(String keyword) {
-        return songRepository.findByNameContaining(keyword);
+    public List<SongModel> getSongsByKeyWord(String keyword) {
+        List<Song> songs = songRepository.findByNameContaining(keyword);
+        if (!songs.isEmpty()) {
+            List<SongModel> songModels = new ArrayList<>();
+            for (Song song : songs) {
+                SongModel songModel = new SongModel();
+                BeanUtils.copyProperties(song, songModel);
+                songModels.add(songModel);
+            }
+            return songModels;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public void increaseViewOfSong(Long id) {
@@ -98,5 +112,20 @@ public class SongService {
 
     public void deleteSong(Song song) {
         songRepository.delete(song);
+    }
+
+    public List<SongModel> searchSong(String query){
+        List<Song> songs = songRepository.searchSong(query);
+        if (!songs.isEmpty()) {
+            List<SongModel> songModels = new ArrayList<>();
+            for (Song song : songs) {
+                SongModel songModel = new SongModel();
+                BeanUtils.copyProperties(song, songModel);
+                songModels.add(songModel);
+            }
+            return songModels;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

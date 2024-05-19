@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.iostar.springbootbackend.entity.Role;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.model.PlaylistModel;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
@@ -201,6 +202,13 @@ public class UserController {
     public ResponseEntity<?> getNotLikedSongsByIdUser(@PathVariable("id_user") Long idUser) {
         List<SongModel> songs = songLikedService.getNotLikedSongsByIdUser(idUser);
         Response response = new Response(true, false, "Get Not Liked Songs Success!", songs);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/searchArtist")
+    public ResponseEntity<?> searchArtist(@RequestParam("query") String query){
+        List<ArtistModel> artists = userService.searchArtist(query);
+        Response response = new Response(true, false, "Find artists Success", artists);
         return ResponseEntity.ok(response);
     }
 }

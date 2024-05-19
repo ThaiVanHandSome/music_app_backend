@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import vn.iostar.springbootbackend.embededId.ArtistSongId;
 import vn.iostar.springbootbackend.entity.*;
+import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.model.SongUpload;
@@ -88,9 +89,9 @@ public class SongController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find song");
     }
 
-    @GetMapping("/songs/query")
-    public ResponseEntity<?> getSongsByKeyword(@RequestParam("p") String query) {
-        List<Song> songs = songService.getSongsByKeyWord(query);
+    @GetMapping("/songs/search")
+    public ResponseEntity<?> getSongsByKeyword(@RequestParam("query") String query) {
+        List<SongModel> songs = songService.getSongsByKeyWord(query);
         Response res = new Response(true, false, "Find Songs Successfully!", songs);
         return ResponseEntity.ok(res);
     }
@@ -173,4 +174,5 @@ public class SongController {
         Response res = new Response(true, false, "Uploaded Successfully!", songModel);
         return ResponseEntity.ok(res);
     }
+
 }
