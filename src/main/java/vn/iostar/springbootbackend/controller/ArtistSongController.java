@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.iostar.springbootbackend.entity.Song;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.ArtistSongService;
 
@@ -24,7 +25,7 @@ public class ArtistSongController {
     // Get Songs by ArtistId
     @GetMapping("/artist/{artistId}/songs")
     public ResponseEntity<?> getAllSongsByArtistId(@PathVariable Long artistId, Pageable pageable) {
-        Page<Song> songs = artistSongService.findAllSongsByArtistId(artistId, pageable);
+        Page<SongModel> songs = artistSongService.findAllSongsByArtistId(artistId, pageable);
         Response res = new Response(true, false, "Get Songs Of Artist Successfully!", songs);
         return ResponseEntity.ok(res);
     }
