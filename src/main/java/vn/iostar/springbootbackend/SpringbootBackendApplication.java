@@ -40,11 +40,10 @@ public class SpringbootBackendApplication {
 	@Autowired
 	private UserService userService;
 
-    public SpringbootBackendApplication(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @PostConstruct
+	public SpringbootBackendApplication(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
+	@PostConstruct
 	public void setup() {
 		Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
 	}
@@ -65,7 +64,6 @@ public class SpringbootBackendApplication {
 			}
 		};
 	}
-
 	@EventListener
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		createUserIfNeeded();

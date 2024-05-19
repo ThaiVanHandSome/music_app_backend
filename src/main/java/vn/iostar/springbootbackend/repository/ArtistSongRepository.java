@@ -30,7 +30,7 @@ public interface ArtistSongRepository extends JpaRepository<ArtistSong, ArtistSo
     @Query("SELECT SUM(s.views) FROM ArtistSong ast JOIN ast.song s WHERE ast.artist.idUser = :artistId")
     int countTotalViewsByArtistId(Long artistId);
 
-    @Query("SELECT COUNT(fa) FROM FollowArtist fa WHERE fa.artist.id = :artistId")
+    @Query("SELECT COUNT(fa) FROM FollowArtist fa WHERE fa.artist.idUser = :artistId")
     int countUsersByArtistId(Long artistId);
 
     @Query("SELECT COUNT(sc) FROM ArtistSong ast JOIN ast.song s JOIN s.songComments sc WHERE ast.artist.idUser = :artistId")

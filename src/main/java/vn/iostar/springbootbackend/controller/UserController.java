@@ -218,4 +218,11 @@ public class UserController {
         }
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/user/{idUser}")
+    public ResponseEntity<?> updateUserByFields(@PathVariable("idUser") Long idUser, @RequestBody Map<String, Object> fields) {
+        User user = userService.updateUserByFields(idUser, fields);
+        Response response = new Response(true, false, "Update Success!", user);
+        return ResponseEntity.ok(response);
+    }
 }
