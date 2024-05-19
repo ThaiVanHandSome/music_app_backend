@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import vn.iostar.springbootbackend.entity.ArtistSong;
 import vn.iostar.springbootbackend.entity.Song;
 import vn.iostar.springbootbackend.entity.User;
+import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.ArtistSongRepository;
 
 import java.util.List;
@@ -15,13 +16,17 @@ import java.util.List;
 @Service
 public class ArtistSongService {
     private final ArtistSongRepository artistSongRepository;
+
+    @Autowired
+    private SongService songService;
     @Autowired
     public ArtistSongService(ArtistSongRepository artistSongRepository) {
         this.artistSongRepository = artistSongRepository;
     }
 
-    public Page<Song> findAllSongsByArtistId(Long id_artist, Pageable pageable) {
-        return artistSongRepository.findAllSongsByArtistId(id_artist, pageable);
+    public Page<SongModel> findAllSongsByArtistId(Long id_artist, Pageable pageable) {
+        Page<Song> songs = artistSongRepository.findAllSongsByArtistId(id_artist, pageable);
+        return songs.map(songService::convertToSongModel);
     }
 
     public List<User> findArtistBySongId(Long idSong){
