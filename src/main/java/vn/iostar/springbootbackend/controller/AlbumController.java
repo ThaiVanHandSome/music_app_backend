@@ -129,7 +129,7 @@ public class AlbumController {
             String imageUrl = imageService.uploadImage(image);
             album.setImage(imageUrl);
         } else {
-            album.setImage("https://th.bing.com/th/id/OIP.Oe_qiCnbrDmKmvNa4CxX4gHaGC?rs=1&pid=ImgDetMain");
+            album.setImage("https://res.cloudinary.com/dv3gj6qre/image/upload/v1716148451/evdts4vwt5bqfcn2seak.jpg");
         }
         album.setDayCreated(LocalDateTime.now());
         Album savedAlbum = albumService.saveAlbum(album);

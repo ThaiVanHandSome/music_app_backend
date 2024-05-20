@@ -143,8 +143,6 @@ public class SongController {
                                         @RequestPart("idSongCategory") Long idSongCategory,
                                         @RequestPart("idAlbum") Long idAlbum,
                                         @RequestPart("resourceFile") MultipartFile resourceFile) throws IOException {
-        System.out.println(imageFile.getSize() + " " + imageFile.getOriginalFilename());
-        System.out.println(resourceFile.getSize() + " " + resourceFile.getOriginalFilename());
         String resource = songService.uploadAudio(resourceFile);
         name = name.replace("\"", "");
         Song song = new Song();
@@ -153,7 +151,7 @@ public class SongController {
             String image = imageService.uploadImage(imageFile);
             song.setImage(image);
         } else {
-            song.setImage("https://100pilabs.com/images/default_music_player_icon_512.png");
+            song.setImage("https://res.cloudinary.com/dv3gj6qre/image/upload/v1716148451/evdts4vwt5bqfcn2seak.jpg");
         }
         song.setResource(resource);
         song.setDayCreated(LocalDateTime.now());
