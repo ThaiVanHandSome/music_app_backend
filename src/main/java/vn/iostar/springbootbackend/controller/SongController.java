@@ -18,6 +18,7 @@ import vn.iostar.springbootbackend.model.ResponseMessage;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.model.SongUpload;
 import vn.iostar.springbootbackend.repository.SongRepository;
+import vn.iostar.springbootbackend.repository.UserRepository;
 import vn.iostar.springbootbackend.response.Response;
 import vn.iostar.springbootbackend.service.*;
 
@@ -45,6 +46,9 @@ public class SongController {
     private SongRepository songRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private SongCategoryService songCategoryService;
     @Autowired
     private UserService userService;
@@ -54,6 +58,7 @@ public class SongController {
     public ResponseEntity<?> getAllSongs() {
         List<SongModel> songModelss = songService.getAllSongs();
         Response res = new Response(true, false, "Get Songs Successfully!", songModelss);
+//        List<Song> songs = songService.getAllSongs();
         return ResponseEntity.ok(res);
     }
 
@@ -72,6 +77,8 @@ public class SongController {
             BeanUtils.copyProperties(optSong.get(), songModel);
             songModel.setCntComments(optSong.get().getSongComments().size());
             songModel.setCntLikes(optSong.get().getSongLikeds().size());
+            songModel.setArtistId(optSong.get().getArtistSongs().get(0).getArtistSongId().getIdArtist());
+            songModel.setArtistName(userRepository.getById(optSong.get().getArtistSongs().get(0).getArtistSongId().getIdArtist()).getNickname());
             Response res = new Response(true, true, "Get Song Successfully!", songModel);
             return ResponseEntity.ok(res);
         }

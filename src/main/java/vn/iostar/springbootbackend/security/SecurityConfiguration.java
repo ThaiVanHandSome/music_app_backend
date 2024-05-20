@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 .antMatchers(HttpMethod.PATCH, "/api/v1/user/").hasRole(Role.ADMIN.name())
                 .antMatchers(ARTIST_WHITELIST).hasRole(Role.ARTIST.name())
                 .antMatchers("/api/v1/artist/**").hasAnyRole(Role.ARTIST.name(), Role.USER.name())
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -65,7 +65,8 @@ public class SecurityConfiguration {
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("http://localhost:3000");
         config.addAllowedOriginPattern("http://10.0.2.2:8989");
-        config.addAllowedOriginPattern("http://192.168.1.2:8989");
+        config.addAllowedOriginPattern("http://192.168.1.245:8989");
+        config.addAllowedOriginPattern("http://192.168.52.28:8989");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

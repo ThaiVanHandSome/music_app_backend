@@ -14,6 +14,7 @@ import vn.iostar.springbootbackend.entity.User;
 import vn.iostar.springbootbackend.model.ArtistModel;
 import vn.iostar.springbootbackend.model.SongModel;
 import vn.iostar.springbootbackend.repository.SongRepository;
+import vn.iostar.springbootbackend.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,14 +30,21 @@ public class SongService {
 
     private final SongRepository songRepository;
 
-    public SongService(SongRepository songRepository) {
+    private final UserRepository userRepository;
+
+    public SongService(SongRepository songRepository, UserRepository userRepository) {
         this.songRepository = songRepository;
+        this.userRepository = userRepository;
     }
 
     public List<SongModel> getAllSongs() {
         List<Song> songs = songRepository.findAll();
         return convertToSongModelList(songs);
     }
+//    public List<Song> getAllSongs() {
+//        List<Song> songs = songRepository.findAll();
+//        return songs;
+//    }
 
     public void saveSong(Song song) {
         songRepository.save(song);
@@ -97,13 +105,14 @@ public class SongService {
         for (Song song : songs) {
             SongModel songModel = new SongModel();
             songModel.setIdSong(song.getIdSong());
+            System.out.println(song.getIdSong());
             songModel.setName(song.getName());
             songModel.setViews(song.getViews());
             songModel.setDayCreated(song.getDayCreated());
             songModel.setResource(song.getResource());
             songModel.setImage(song.getImage());
-            songModel.setArtistId(song.getArtistSongs().get(0).getArtist().getIdUser());
-            songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getNickname());
+            songModel.setArtistId(song.getArtistSongs().get(0).getArtistSongId().getIdArtist());
+            songModel.setArtistName(userRepository.getById(song.getArtistSongs().get(0).getArtistSongId().getIdArtist()).getNickname());;
             songModels.add(songModel);
         }
         return songModels;
@@ -117,8 +126,8 @@ public class SongService {
         songModel.setDayCreated(song.getDayCreated());
         songModel.setResource(song.getResource());
         songModel.setImage(song.getImage());
-        songModel.setArtistId(song.getArtistSongs().get(0).getArtist().getIdUser());
-        songModel.setArtistName(song.getArtistSongs().get(0).getArtist().getNickname());
+        songModel.setArtistId(song.getArtistSongs().get(0).getArtistSongId().getIdArtist());
+        songModel.setArtistName(userRepository.getById(song.getArtistSongs().get(0).getArtistSongId().getIdArtist()).getNickname());
         return songModel;
     }
 
