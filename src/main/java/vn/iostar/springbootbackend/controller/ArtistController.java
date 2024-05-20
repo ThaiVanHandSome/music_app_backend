@@ -64,7 +64,7 @@ public class ArtistController {
             for (Album album : albums) {
                 AlbumModel albumModel = new AlbumModel();
                 BeanUtils.copyProperties(album, albumModel);
-                albumModel.setCntSong(album.getSongs().size());
+                albumModel.setCountSong(album.getSongs().size());
                 albumModels.add(albumModel);
             }
             Response res = new Response(true, false, "Get Albums Of Artist Successfully!", albumModels);

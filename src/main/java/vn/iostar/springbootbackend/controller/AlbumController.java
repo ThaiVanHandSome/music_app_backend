@@ -56,7 +56,7 @@ public class AlbumController {
         if (foundAlbum.isPresent()) {
             AlbumModel model = new AlbumModel();
             BeanUtils.copyProperties(foundAlbum.get(), model);
-            model.setCntSong(foundAlbum.get().getSongs().size());
+            model.setCountSong(foundAlbum.get().getSongs().size());
             Response res = new Response(true, false, "Get Album Successfully!", model);
             return ResponseEntity.ok(res);
         }
@@ -107,6 +107,21 @@ public class AlbumController {
             return ResponseEntity.ok(res);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Do not find album");
+    }
+
+    @GetMapping("/albums/artist/{idArtist}")
+    public ResponseEntity<?> getAlbumByArtistId(@PathVariable("idArtist") Long idArtist) {
+        List<Album> albums = albumService.getAlbumByIdArtist(idArtist);
+        List<AlbumModel> albumModelList = new ArrayList<>();
+        if (!albums.isEmpty()) {
+            for (Album album : albums) {
+                AlbumModel model = new AlbumModel();
+                BeanUtils.copyProperties(album, model);
+                albumModelList.add(model);
+            }
+        }
+        Response res = new Response(true, false, "Get Albums Successfully!", albumModelList);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/albums/search")
@@ -169,4 +184,6 @@ public class AlbumController {
         res.setData(albumService.countAlbumsByArtistId(idArtist));
         return ResponseEntity.ok(res);
     }
+
+
 }
